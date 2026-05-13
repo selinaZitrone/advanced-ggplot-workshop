@@ -1,0 +1,21 @@
+# R
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+*.Rcheck
+.httr-oauth
+.Renviron
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Workshop outputs
+plots/*.png
+plots/*.pdf
+plots/*.svg
+!plots/.gitkeep
+
+# Leftover from sandbox bootstrap (safe to delete)
+test.txt
