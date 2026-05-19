@@ -1,3 +1,4 @@
+
 # Advanced ggplot2 Workshop — Planning Notes
 
 ## Overview
@@ -24,8 +25,9 @@
 - Key recurring objects:
   - `gap_2007` — filtered to year == 2007 (bubble chart anchor)
   - `gap_continent` — mean lifeExp per continent per year (line chart)
-  - `gap_asia` — Asian countries only (spaghetti → highlight demo)
-- **Thread**: bubble chart (gdpPercap vs lifeExp, colored by continent) is the main recurring plot across modules
+  - `gap_asia` — Asian countries only (used in Module 3 exercise)
+  - `gap_europe` — European countries only (used in Module 3 demo)
+- **Thread**: bubble chart (gdpPercap vs lifeExp, colored by continent) is the main recurring plot across modules 1–2
 
 ## Timing
 
@@ -48,92 +50,103 @@
 
 ## Module content decisions
 
-### Module 1 — Custom themes (15 min)
-**Base theme:** `theme_light()` — already close to journal style, minimal tweaks needed
+### Module 1 — Custom themes (15 min) ✅ COMPLETE
+**Scripts:** `R/01_themes.R`, `R/01_themes_final.R`, `exercises/01_themes_exercise.R`
 
-**theme_workshop() elements (live coded in this order):**
-1. `plot.title = element_text(size = rel(1.1), face = "bold")` — introduces rel()
-2. `axis.title = element_text(size = rel(0.9), color = "grey30")` — hierarchy through size not color
-3. `panel.grid.minor = element_blank()` — introduces element_blank()
-4. `panel.border = element_rect(color = "grey70", fill = NA)` — introduces element_rect(), why fill = NA
-5. `ink` / `paper` arguments (ggplot2 4.0) — brief demo: publications = default, posters = change both
+**`theme_workshop()` — settled design:**
+```r
+theme_workshop <- function(base_size = 16, ink = "grey20", paper = "white") {
+  theme_light(base_size = base_size, ink = ink, paper = paper) %+replace%
+    theme(
+      legend.text = element_text(size = rel(0.85)),
+      panel.grid.minor = element_blank()
+    )
+}
+```
+Key decisions:
+- `base_size = 16` — larger default for screenshare readability; Module 5 will show `base_size = 11/12` for publication
+- `panel.border` removed — `theme_light()` + `ink` already handles it; no need to hard-code a color
+- `plot.title` not suppressed — just don't include it in `labs()` (except Module 3 where ggtext title is the point)
+- Only `legend.text` is stepped down with `rel()` — axis text stays at `base_size` (that's what it means)
+- `ink`/`paper` passed through to `theme_light()` — brief demo of changing both for poster vs paper
 
-**Storyline order:**
-1. Slides: show raw p_bubble → "would you submit this?" → motivates the module
-2. Slide: inheritance tree diagram (text → axis.text → axis.text.x) — concept only, no live code
-3. Slide: why write a function (reuse, consistency, one place to change)
-4. Live code: build theme_workshop() element by element, render after each step
-5. AFTER exercise: theme_set() reveal as payoff moment
+**Scales on bubble chart:**
+- `scale_x_log10(labels = label_dollar(accuracy = 1))`
+- `scale_size(labels = label_number(scale_cut = cut_short_scale()))`
 
-**Cut:**
-- `%+replace%` vs `+` — drop entirely, use %+replace% silently
-- Transparent background — mention only ("use fill = 'transparent', more in Module 5")
-- Deep dive on ink/paper — brief demo only
-
-**Scales introduced here:**
-- `scale_x_log10(labels = label_dollar(accuracy = 1))` on bubble chart
-- `scale_size(labels = label_number(scale_cut = cut_short_scale()))` on population
-
-**Slides:** raw plot → motivation, inheritance tree diagram, why-a-function bullets, theme_set pattern
-
-### Module 2 — Color with intent (18 min)
-**Keep:**
-- Why colorblind-safe matters (brief theory on slides)
-- Okabe-Ito palette from base R (`palette.colors()`) — no package needed
-- Named vector pattern with continent-to-color assignment
-- Named vector consistency demo: filter to 2 continents, show colors stay locked
-- `colorBlindness::cvdPlot()` to simulate CVD on the actual plot
-- viridis (`scale_colour_viridis_d()`) — built into ggplot2
-- scico (`scale_colour_scico_d()`) — CRAN, perceptually uniform
-- cols4all (`c4a_gui()`) — GitHub install, interactive browser, "wow" moment at the end
-- Double-encoding (color + shape) — brief, at the end
-
-**Cut:**
-- paletteer — replaced by scico + cols4all
-- Deep dive on CVD types — one slide, mention protanopia/deuteranopia only
+**Labels:** `color = "Continent"`, `size = "Population"` (both capitalised)
 
 **Storyline order:**
-1. Slide: show default bubble chart → cvdPlot() output side by side → "your reader may not see what you see"
-2. Slide: three palette types (qualitative / sequential / diverging) — visual reference only, no code
-3. Slide: brief mention of protanopia (~2%) and deuteranopia (~6%) as the two main CVD types
-4. Live code: `palette.colors(palette = "Okabe-Ito")` — introduce the source
-5. Live code: build named vector, assign continents deliberately
-6. Live code: apply with `scale_colour_manual(values = continent_colors)`
-7. Live code: consistency demo — filter to Africa + Europe, show named colors don't shift
-8. Live code: `cvdPlot(p_okabe)` → confirm it holds up; contrast with a bad palette (`Set1`)
-9. Live code: viridis — one line, mention greyscale-safe use case
-10. Live code: scico — one or two palettes, mention `scico_palette_names()` to browse
-11. Live code: double-encoding with `aes(shape = continent)` + `scale_shape_manual()`
-12. Demo: `cols4all::c4a_gui()` — launch browser, let students explore during exercise
+1. Slides: raw p_bubble → motivation, inheritance tree diagram, why-a-function bullets
+2. Live code: build theme_workshop() element by element
+3. AFTER exercise: theme_set() reveal as payoff moment
 
-**Slides:**
-- Default plot → cvdPlot() 4-panel (on slide as screenshot, not live)
-- Three palette type reference (qualitative / sequential / diverging)
-- Okabe-Ito swatch with color names
-- Named vector rationale: position-based vs. name-based — show the filtering problem
-- cols4all screenshot or live demo prompt
+**Cut:** `%+replace%` explanation (used silently), transparent background (mention only), deep ink/paper dive
 
-**Packages:**
-- `colorBlindness` (CRAN) — `cvdPlot()`
-- `scico` (CRAN) — `scale_colour_scico_d()`, `scico_palette_names()`
-- `cols4all` (GitHub: mtennekes/cols4all) — `c4a_gui()`
+### Module 2 — Color with intent (18 min) ✅ COMPLETE
+**Scripts:** `R/02_color.R`, `R/02_color_final.R`, `exercises/02_color_exercise.R`
+- Deleted outdated draft `exercises/02_color.R` (used old `colorblindr`/`paletteer` API)
 
-### Module 3 — Directing attention (22 min)
-**Keep:**
-- Asia spaghetti as starting point
-- `gghighlight` for China + India
-- `scale_color_manual` with named color vector
-- `ggrepel::geom_text_repel()` for endpoint labels
-- `ggtext::element_markdown()` for colored title
-- `scales::label_dollar()` on y-axis (reinforces module 1)
-- Brief `annotate()` with label only (drop the arrow — too fiddly)
+**Okabe-Ito palette — settled design:**
+```r
+okabe <- palette.colors(palette = "Okabe-Ito")
+continent_colors <- c(
+  Africa   = okabe[[2]], # orange
+  Americas = okabe[[3]], # sky blue
+  Asia     = okabe[[4]], # bluish green
+  Europe   = okabe[[6]], # blue
+  Oceania  = okabe[[1]]  # black
+)
+```
+- Black (`okabe[[1]]`) included — more distinguishable; assigned to Oceania (fewest points)
+- Yellow (`okabe[[5]]`) skipped — low contrast on white
 
-**Cut:**
-- Arrow annotation (coordinates fiddly, low pedagogical value)
+**Double-encoding removed** from both scripts — varying shapes breaks the bubble size encoding.
+Double-encoding concept mentioned on slides only (works better on line/bar charts).
 
-**Slides:** the "before/after" story, when to use direct labels vs legend
+**Storyline order:**
+1. Slide: default → cvdPlot() screenshot → motivation
+2. Slide: 3 palette types (qualitative/sequential/diverging)
+3. Slide: Okabe-Ito swatches + which color is skipped and why
+4. Slide: named vector rationale (position-based vs. name-based, filtering problem)
+5. Live code: `palette.colors()`, build named vector, apply, consistency demo, `cvdPlot()`
+6. Live code: viridis, scico
+7. Demo: `cols4all::c4a_gui()`
 
-### Module 4 — Multipanel with patchwork (18 min)
+**Packages:** `colorBlindness`, `scico`, `cols4all` (GitHub: mtennekes/cols4all)
+
+### Module 3 — Directing attention (22 min) 🔄 IN PROGRESS
+**Scripts:** `R/03_attention.R`, `R/03_attention_final.R`, `exercises/03_attention_exercise.R`
+
+**Demo story: Europe — life expectancy, Germany vs Poland**
+- `gap_europe` = all European countries (spaghetti background)
+- Highlight: **Germany** (`#E69F00`) and **Poland** (`#0072B2`)
+- Story: Germany climbed steadily (post-WWII recovery); Poland plateaued under communism (1965–1990), then accelerated sharply after 1989
+- Key data: Poland lifeExp 70.8 (1972) → 71.0 (1992) → 75.6 (2007)
+- `annotate()` label: "1989: fall of the Berlin Wall" — placed near x=1992, y=66
+- Arrow to Poland's 1992 point is **optional / if time allows** (marked in script)
+- Title uses `element_markdown()` with colored country names
+
+**Exercise story: Asia — GDP per capita, China vs India**
+- `gap_asia` = all Asian countries
+- Highlight: China and India
+- 5 tasks: gghighlight → named colors → ggrepel endpoints → ggtext title → annotate (stretch)
+- Stretch: annotate China's 1978 reform period
+
+**Progression (both demo and exercise):**
+gghighlight → scale_color_manual (named vector) → geom_text_repel + drop legend → element_markdown title → annotate
+
+**Status:** Scripts written, not yet reviewed/tested by instructor.
+TODO: Run `03_attention_final.R` end-to-end to verify annotation position looks right on screen.
+
+**Slides for Module 3:**
+- Before/after spaghetti → highlighted plot
+- One principle: "A plot should have one story"
+- When to use direct labels vs legend
+
+### Module 4 — Multipanel with patchwork (18 min) ⏳ NOT STARTED
+**Scripts to create:** `R/04_patchwork.R`, `R/04_patchwork_final.R`, `exercises/04_patchwork_exercise.R`
+
 **Keep:**
 - `+` (side by side), `/` (stacked), nested `()` layouts
 - `plot_layout(guides = "collect")`
@@ -141,24 +154,21 @@
 - `plot_annotation(tag_levels = "A")`
 - `inset_element()` — keep as "wow" moment but cut if time is short
 
-**Replace:** boxplot panel with bar chart of median GDP by continent
-  (echoes bubble chart x-variable, more coherent)
+**Replace:** boxplot panel with bar chart of median GDP by continent (echoes bubble chart x-variable)
 
-**Slides:** patchwork operator overview, & vs + distinction
+### Module 5 — Export (10 min) ⏳ NOT STARTED
+**Scripts to create:** `R/05_export.R`, `R/05_export_final.R`
 
-### Module 5 — Export (10 min)
 **Keep:**
 - `ggsave()` with explicit width/height/units/dpi
 - Target sizes: paper figure (~3.5 in), presentation (~6 in), poster (~8 in)
-- `ragg::agg_png()` or `device = ragg::agg_png` for crispy text
-- Mention `showtext` or system fonts briefly
-
-**Slides:** DPI table, size targets per output type
+- `ragg::agg_png()` for crispy text
+- Show `base_size = 11/12` for publication vs `base_size = 16` for screenshare
+- Mention `showtext`/system fonts briefly
 
 ## Packages used across workshop
-- ggplot2, dplyr, gapminder
-- scales
-- colorblindr, paletteer
+- ggplot2, dplyr, gapminder, scales
+- colorBlindness, scico, cols4all (GitHub)
 - gghighlight, ggrepel, ggtext
 - patchwork
 - ragg
