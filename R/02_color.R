@@ -1,82 +1,60 @@
+# Module 2: Color with intent
+# If you fall behind, open 02_color_final.R to catch up
+
 library(ggplot2)
 library(dplyr)
 library(gapminder)
-library(colorblindr)
-library(paletteer)
+library(scales)
+library(colorBlindness)
+library(scico)
+# cols4all: install with pak::pak("mtennekes/cols4all") then library(cols4all)
 
-theme_set(theme_minimal(base_size = 12))
+source(here::here("R", "01_themes_final.R"))  # loads theme_workshop() and p_bubble
+theme_set(theme_workshop())
 
-gap_continent <- gapminder |>
-  group_by(year, continent) |>
-  summarise(mean_lifeExp = mean(lifeExp), .groups = "drop")
+# ── The problem with default colors ───────────────────────────────────────────
 
-# default colors -----------------------------------------------------------
+p_bubble  # what does this look like for colorblind readers?
 
-p_default <- ggplot(
-  gap_continent,
-  aes(x = year, y = mean_lifeExp, color = continent)
-) +
-  geom_line(linewidth = 1) +
-  labs(
-    title = "Life expectancy over time by continent",
-    x = NULL,
-    y = "Life expectancy (years)",
-    color = NULL
-  )
+cvdPlot(p_bubble)  # wow moment: deuteranopia, protanopia, desaturated
 
-p_default
+# ── Okabe-Ito from base R ─────────────────────────────────────────────────────
 
-# Okabe-Ito with a named vector --------------------------------------------
+# Available since R 4.0 — no package needed
+palette.colors(palette = "Okabe-Ito")
 
-# A named vector means colors stick to groups, even if a group
-# disappears after filtering.
-okabe_ito_continent <- c(
-  Africa = "#E69F00",
-  Americas = "#56B4E9",
-  Asia = "#009E73",
-  Europe = "#0072B2",
-  Oceania = "#D55E00"
+# Build a named vector: assign specific colors to specific continents
+continent_colors <- c(
+  # build this together
 )
 
-p_okabe <- p_default +
-  scale_color_manual(values = okabe_ito_continent)
+# Apply to the plot
+p_bubble +
+  scale_colour_manual(values = continent_colors)
 
-p_okabe
+# ── Why named vectors matter ──────────────────────────────────────────────────
 
-# check with cvd_grid() ----------------------------------------------------
+# What happens if we filter to just two continents?
+gap_2007 |>
+  filter(continent %in% c("Africa", "Europe")) |>
+  ggplot(aes(x = gdpPercap, y = lifeExp, color = continent, size = pop)) +
+  geom_point(alpha = 0.7) +
+  scale_x_log10(labels = label_dollar(accuracy = 1)) +
+  scale_colour_manual(values = continent_colors)  # colors stay consistent!
 
-# Simulates the plot under deuteranopia, protanopia, tritanopia,
-# and grayscale.
-cvd_grid(p_okabe)
+# ── Check colorblindness ──────────────────────────────────────────────────────
 
-# browse other palettes via paletteer --------------------------------------
+p_okabe <- p_bubble + scale_colour_manual(values = continent_colors)
+cvdPlot(p_okabe)
 
-# paletteer wraps ~2500 palettes from dozens of packages.
-# Run `paletteer::palettes_d_names` (or `palettes_c_names`) to browse.
+# ── Other safe palette sources ────────────────────────────────────────────────
 
-p_default +
-  paletteer::scale_color_paletteer_d("ggthemes::colorblind")
+# viridis — built into ggplot2, great for ordered categories or greyscale printing
+p_bubble + scale_colour_viridis_d()
 
-# double-coding with color + linetype --------------------------------------
+# scico — perceptually uniform, good for publications
+p_bubble + scale_colour_scico_d(palette = "batlow")
+# ── cols4all: palette browser ─────────────────────────────────────────────────
 
-# When you have <= 4 categories, encoding the same group with two
-# channels (color + shape, color + linetype) helps anyone who
-# struggles with color and also helps in B/W print.
-gap_three <- gap_continent |>
-  filter(continent %in% c("Africa", "Asia", "Europe"))
-
-ggplot(
-  gap_three,
-  aes(
-    x = year, y = mean_lifeExp,
-    color = continent, linetype = continent
-  )
-) +
-  geom_line(linewidth = 1) +
-  scale_color_manual(values = okabe_ito_continent) +
-  labs(
-    title = "Same group encoded twice: color + linetype",
-    x = NULL,
-    y = "Life expectancy (years)",
-    color = NULL, linetype = NULL
-  )
+# library(cols4all)
+# c4a_gui()  # interactive browser with CVD simulation built in

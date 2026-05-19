@@ -17,14 +17,12 @@ p_bubble <- ggplot(
   gap_2007,
   aes(x = gdpPercap, y = lifeExp, color = continent, size = pop)
 ) +
-  geom_point(alpha = 0.7) +
+  geom_point() +
   scale_x_log10(labels = label_dollar(accuracy = 1)) +
   scale_size(labels = label_number(scale_cut = cut_short_scale())) +
   labs(
-    title = "Life expectancy vs. GDP per capita (2007)",
     x = "GDP per capita (USD, log scale)",
     y = "Life expectancy (years)",
-    color = "Continent",
     size = "Population"
   )
 
@@ -38,17 +36,18 @@ p_bubble
 # rel() sizes text relative to base_size — change one number and everything
 # scales proportionally. This is the theme inheritance tree in action.
 
-theme_workshop <- function(base_size = 12, ink = "grey20", paper = "white") {
+theme_workshop <- function(base_size = 16, ink = "grey20", paper = "white") {
   theme_light(base_size = base_size, ink = ink, paper = paper) %+replace%
     theme(
-      plot.title = element_text(size = rel(1.1), face = "bold"),
-      axis.title = element_text(size = rel(0.9), color = "grey30"),
-      panel.grid.minor = element_blank(),
-      panel.border = element_rect(color = "grey70", fill = NA)
+      legend.text = element_text(size = rel(0.85)),
+      panel.grid.minor = element_blank()
     )
 }
 
 p_bubble + theme_workshop()
+
+# Or set ink and paper colors:
+p_bubble + theme_workshop(ink = "grey 90", paper = "grey20")
 
 # ── Apply globally with theme_set() ───────────────────────────────────────────
 

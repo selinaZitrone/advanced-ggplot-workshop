@@ -17,14 +17,12 @@ p_bubble <- ggplot(
   gap_2007,
   aes(x = gdpPercap, y = lifeExp, color = continent, size = pop)
 ) +
-  geom_point(alpha = 0.7) +
+  geom_point() +
   scale_x_log10(labels = label_dollar(accuracy = 1)) +
   scale_size(labels = label_number(scale_cut = cut_short_scale())) +
   labs(
-    title = "Life expectancy vs. GDP per capita (2007)",
     x = "GDP per capita (USD, log scale)",
     y = "Life expectancy (years)",
-    color = "Continent",
     size = "Population"
   )
 
@@ -35,7 +33,7 @@ p_bubble
 # A theme function lets you reuse your style across every plot and script —
 # like a personal style sheet.
 
-theme_workshop <- function(base_size = 12) {
+theme_workshop <- function(base_size = 16, ink = "grey20", paper = "white") {
   # build this together during the demo
 }
 
