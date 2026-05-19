@@ -32,7 +32,7 @@ p
 # theme_set(theme_lab())
 # print(p)
 
-# stretch ----
+# stretch ----------------------------------------------------------------------
 
 # - custom plot background color
 # - Google font via sysfonts + showtext

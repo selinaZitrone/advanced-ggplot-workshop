@@ -5,7 +5,7 @@ library(gapminder)
 gap_2007 <- gapminder |>
   filter(year == 2007)
 
-# default plot ----
+# default plot ---------------------------------------------------------------
 
 p_default <- ggplot(
   gap_2007,
@@ -23,7 +23,7 @@ p_default <- ggplot(
 
 p_default
 
-# anatomy of theme() ----
+# anatomy of theme() ----------------------------------------------------------
 
 # Elements form an inheritance tree:
 # text -> axis.text -> axis.text.x
@@ -39,7 +39,7 @@ p_default +
     axis.text = element_text(family = "sans")
   )
 
-# + vs %+replace% ----
+# + vs %+replace% -------------------------------------------------------------
 
 # + keeps the base theme and tweaks it
 p_default +
@@ -52,17 +52,19 @@ my_theme <- theme_minimal() %+replace%
 
 p_default + my_theme
 
-# theme_workshop() as a function ----
+# theme_workshop() as a function ----------------------------------------------
 
 theme_workshop <- function() {
   theme_minimal(base_size = 12) %+replace%
     theme(
       plot.title = element_text(
-        size = 14, hjust = 0,
+        size = 14,
+        hjust = 0,
         margin = margin(b = 10)
       ),
       plot.subtitle = element_text(
-        size = 12, hjust = 0,
+        size = 12,
+        hjust = 0,
         margin = margin(b = 10)
       ),
       axis.title = element_text(size = 12),
@@ -80,7 +82,7 @@ theme_workshop <- function() {
 
 p_default + theme_workshop()
 
-# apply globally with theme_set() ----
+# apply globally with theme_set() ----------------------------------------------
 
 theme_set(theme_workshop())
 
@@ -88,7 +90,7 @@ ggplot(gap_2007, aes(x = continent, y = lifeExp, fill = continent)) +
   geom_boxplot() +
   labs(title = "Life expectancy by continent (2007)")
 
-# source the theme from its own file ----
+# source the theme from its own file -------------------------------------------
 
 # In a real project, theme_workshop() lives in its own file:
 # R/theme_lab.R, sourced at the top of every analysis script:
