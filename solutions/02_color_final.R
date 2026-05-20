@@ -44,42 +44,20 @@ palette.colors(palette = "Okabe-Ito")
 okabe <- palette.colors(palette = "Okabe-Ito")
 
 continent_colors <- c(
-  Africa = okabe[[2]], # orange
-  Americas = okabe[[3]], # sky blue
-  Asia = okabe[[4]], # bluish green
-  Europe = okabe[[6]], # blue
-  Oceania = okabe[[1]] # black
+  Oceania = okabe[1],
+  Africa = okabe[2],
+  Americas = okabe[3],
+  Asia = okabe[4],
+  Europe = okabe[6]
 )
 
 p_okabe <- p_bubble + scale_colour_manual(values = continent_colors)
 p_okabe
 
-# Why named vectors matter ---------------------------------------------------
-
-# Without names, colors shift when you filter the data.
-# With names, the mapping is locked: Africa is always orange.
-gap_2007 |>
-  filter(continent %in% c("Africa", "Europe")) |>
-  ggplot(aes(x = gdpPercap, y = lifeExp, color = continent, size = pop)) +
-  geom_point(alpha = 0.7) +
-  scale_x_log10(labels = label_dollar(accuracy = 1)) +
-  scale_size(labels = label_number(scale_cut = cut_short_scale())) +
-  scale_colour_manual(values = continent_colors) + # Africa stays orange
-  labs(
-    x = "GDP per capita (USD, log scale)",
-    y = "Life expectancy (years)",
-    color = "Continent",
-    size = "Population"
-  )
-
 # Check colorblindness -------------------------------------------------------
 
 # Okabe-Ito stays distinguishable under all common CVD types.
 cvdPlot(p_okabe)
-
-# Compare a bad palette
-p_bad <- p_bubble + scale_colour_brewer(palette = "Set1")
-cvdPlot(p_bad) # red and green collapse under deuteranopia
 
 # Other safe palette sources -------------------------------------------------
 

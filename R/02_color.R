@@ -7,7 +7,6 @@ library(gapminder)
 library(scales)
 library(colorBlindness)
 library(scico)
-# cols4all: install with pak::pak("mtennekes/cols4all") then library(cols4all)
 
 source(here::here("R", "theme.R")) # theme_workshop() (you create theme.R in Module 1)
 theme_set(theme_workshop())
@@ -30,24 +29,18 @@ p_bubble <- ggplot(
 
 # The problem with default colors --------------------------------------------
 
-p_bubble # how does this look for colorblind readers?
+p_bubble
 
-cvdPlot(p_bubble) # simulate common types of color vision deficiency
 
-# Okabe-Ito from base R ------------------------------------------------------
+# Choose better colors --------------------------------------------------------------
 
-# Built into base R since version 4.0
-palette.colors(palette = "Okabe-Ito")
+# Manual colors: Okabe-Ito ---------------------------------------------------------------
+okabe_colors <- palette.colors(palette = "Okabe-Ito")
 
-# Assign a fixed color to each continent
-continent_colors <- c(
-  # build this together
-)
+p_bubble + scale_colour_manual(values = okabe_colors)
 
-p_bubble +
-  scale_colour_manual(values = continent_colors)
 
-# Why named vectors matter ---------------------------------------------------
+# Named color vectors ---------------------------------------------------
 
 # What happens if we filter to just two continents?
 gap_2007 |>
@@ -55,22 +48,6 @@ gap_2007 |>
   ggplot(aes(x = gdpPercap, y = lifeExp, color = continent, size = pop)) +
   geom_point(alpha = 0.7) +
   scale_x_log10(labels = label_dollar(accuracy = 1)) +
-  scale_colour_manual(values = continent_colors) # colors stay consistent
-
-# Check colorblindness -------------------------------------------------------
-
-p_okabe <- p_bubble + scale_colour_manual(values = continent_colors)
-cvdPlot(p_okabe)
+  scale_colour_manual(values = okabe_colors)
 
 # Other safe palette sources -------------------------------------------------
-
-# viridis: built into ggplot2, good for ordered categories or greyscale
-p_bubble + scale_colour_viridis_d()
-
-# scico: perceptually uniform, good for publications
-p_bubble + scale_colour_scico_d(palette = "batlow")
-
-# cols4all: palette browser --------------------------------------------------
-
-# library(cols4all)
-# c4a_gui() # interactive browser with CVD simulation built in

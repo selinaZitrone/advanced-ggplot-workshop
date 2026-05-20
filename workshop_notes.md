@@ -174,10 +174,156 @@ p_bubble + theme_workshop(ink = "grey90", paper = "grey20")
 - One more trick before we move on
 - Already convenient
 - But we can also set a default theme globally for all plots in this R session with `theme_set()`
-- Set the theme globally, remove the theme layer, restart the session and show it is still the same theme
-	- Other option: set theme, create a new plot and show it already has the theme -> DISCUSS
+- Set the theme globally, then create a new plot and show it is already styled (no theme layer needed)
+	- Note: theme_set() is session-scoped, it does not persist after restarting R
 ```r 
 theme_set(theme_workshop())
 ```
 
+## Module 2: Color with intent
 
+### Intro 
+
+- Colors is a huge topic and there are an infinite amount of palettes out there to choose from
+- In general: 3 palette types: qualitative/sequential/diverging
+	- Qualitative: Discrete different data (e.g. continents)
+	- Sequential: Data that follows a logical order (e.g. ascending number)
+	- Diverging: E.g. Values Above and below 0
+		- Decided: show the three types as simple colour-swatch strips (no gapminder plots, no map). Tie each to a gapminder example verbally: qualitative = continents, sequential = life expectancy, diverging = above/below average.
+
+Slide 1: 3 columns with headers for the 3 palette types and a colour-swatch strip below each, plus a short bullet on when to choose which. (Swatches are generated in slides.qmd, no screenshots needed.)
+
+- For scientific figures 2 things are very important to think about
+	- Pick intuitive colors
+	- Pick colorblind friendly colors
+
+### Pick intuitive colors
+
+- This one is easy to explain.
+
+Slide: ![[Blogpost on colors](https://www.datawrapper.de/blog/colors) by Lisa Charlotte Muth (Datawrapper)](images/2025_04_17_data-visualisation/intuitive_colors.png)
+
+![[Lecture  - Advanced ggplot workshop-1.png]]
+  
+### Use colorblind friendly colors
+
+- R's default colors are not color-blind friendly
+- Colorblind friendly options I recomend for R packages are
+
+- Okabe-Ito palette
+	- Say: designed by Okabe & Ito to stay distinguishable under all common colour-blindness types; 8 hues plus black and grey; built into base R via palette.colors(); a solid default for categorical data. We skip the yellow (low contrast on white).
+
+Slide: Show Okabe Ito colors and link to the source. Bullet point to say integrated in base R
+
+- Viridis color palette
+	- Included in ggplot, good for sequential data
+	- Say: perceptually uniform, colourblind- and greyscale-safe; built into ggplot2 (scale_*_viridis_c / _d); best for ordered or continuous data; options A-H (viridis, magma, plasma, cividis, ...).
+
+Slide: Link to viridis do on ggplot page, show the different viridis color options (just the colors, not in a plot)
+
+- Scico package
+	-  Designed for representing scientific data in way that is
+	- fairly representing data
+	- universally readable
+	- citable
+
+Slide: Show scico colors (rendered as swatches in R, no screenshot needed), 2 bullte points why they are cool, link to scico package and link to the original source of the colors used in scico: https://www.fabiocrameri.ch/colourmaps/
+
+Slide (just as reference): Shows how to install, load and use colorBlindness package and cvdPlot function on p_bubble
+
+Slides (just as reference): Install, load and use cols4All with link to the package
+### Live demo
+
+- Load packages and explain what they do
+- Show p-bubble
+- How does this look like for colorblind readers?
+- Simulate common types of color blindness
+```r
+cvdPlot(p_bubble)
+```
+
+- How can we do better?
+#### Choose manual colors: Okabe-Ito
+- One famouscolorblind-safe qualitative palette is the Okabe-Ito palette
+- It comes with R
+- Access the color values like this:
+```r
+palette.colors(palette = "Okabe-Ito")
+```
+- We could now just save these colors in a variable and use it in our plot
+```r
+okabe <- palette.colors(palette = "Okabe-Ito")
+p_bubble +
+  scale_color_manual(values = okabe)
+```
+- If I do this, I have one problem: 
+	- If I have multiple plots with continents, I would like to have a consistent color for each continent for every plot
+	- But if I have another plot, that only looks at two continents, the colors change because it takes the 2 first colors
+
+```r 
+gap_2007 |>
+  filter(continent %in% c("Africa", "Europe")) |>
+  ggplot(aes(x = gdpPercap, y = lifeExp, color = continent, size = pop)) +
+  geom_point(alpha = 0.7) +
+  scale_x_log10(labels = label_dollar(accuracy = 1)) +
+  scale_colour_manual(values = okabe_colors)
+```
+
+- Solution: Create a named vector of colors where each continent gets it's own color
+	- something I always recommend you to do if you create custom colors
+		- Here we can first of all choose which country gets which color
+		- And we could even skip the yellow color because it does not have such a high contrast
+```r
+continent_colors <- c(
+  Oceania = okabe[1],
+  Africa = okabe[2],
+  Americas = okabe[3],
+  Asia = okabe[4],
+  Europe = okabe[6]
+)  
+```
+- Now we can apply the continent colors to both plots and you see that the colors are consistent
+- Replace `okabe_colors` with `continent_colors` and show the result
+
+- Extra: Add the custom color definitions to the `theme.R` so it is available also in other scripts that might need the same colors
+
+#### Other safe palettes
+
+- Instead of custom colors, you can also use color scale functions for ggplot
+- Viridis color palette (`_d` for discrete `_c` for continuous): 
+```r
+p_bubble + scale_colour_viridis_d()
+```
+- Use with different options, check out
+```r
+scale_colour_viridis_d()
+```
+
+- Or scico palettes with (same pattern `_d` for discreete, `c` for continuous )
+
+```r
+p_bubble + scale_colour_scico_d(palette = "batlow")
+```
+
+- Find all options with
+```r
+scico_palette_names(categorical = TRUE)
+```
+#### Fancy tool cols4all (optional if time)
+
+- Tool to browse all palettes and filter them by suitability
+- Needs to install from Github -> Windows users need RTools installed
+	- Try it out in the exercise.
+	- If you can't install the package -> Install RTools first (after the workshop)
+```r
+library(cols4all)
+c4a_gui()
+```
+
+### Exercise
+
+- Take a plot and try different color scales
+	- Check available viridis options with `?scale_color_viridis`
+	- Check available options for scico with
+`scico_palette_names(categorical = TRUE)`
+- Use cvdPlot to inspect the colors
