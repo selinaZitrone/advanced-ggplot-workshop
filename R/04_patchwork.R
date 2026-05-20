@@ -39,7 +39,7 @@ p_bubble <- ggplot(
   labs(
     title = "2007 snapshot",
     x = "GDP per capita (USD, log scale)",
-    y = "Life expectancy (years)",
+    y = "Life expectancy",
     color = "Continent",
     size = "Population"
   )
@@ -54,7 +54,7 @@ p_life <- ggplot(
   labs(
     title = "Life expectancy over time",
     x = NULL,
-    y = "Life expectancy (years)",
+    y = "Life expectancy",
     color = "Continent"
   )
 
@@ -69,7 +69,7 @@ p_gdp <- ggplot(
   labs(
     title = "GDP per capita over time",
     x = NULL,
-    y = "GDP per capita (USD)",
+    y = "GDP per capita",
     color = "Continent"
   )
 

@@ -39,7 +39,7 @@ p_bubble <- ggplot(
   labs(
     title = "2007 snapshot",
     x = "GDP per capita (USD, log scale)",
-    y = "Life expectancy (years)",
+    y = "Life expectancy",
     color = "Continent",
     size = "Population"
   )
@@ -53,7 +53,7 @@ p_life <- ggplot(
   theme_workshop() +
   labs(
     title = "Life expectancy over time",
-    y = "Life expectancy (years)",
+    y = "Life expectancy",
     color = "Continent"
   )
 
@@ -67,7 +67,7 @@ p_gdp <- ggplot(
   theme_workshop() +
   labs(
     title = "GDP per capita over time",
-    y = "GDP per capita (USD)",
+    y = "GDP per capita",
     color = "Continent"
   )
 
@@ -103,7 +103,7 @@ p_life_bare <- ggplot(
 ) +
   labs(
     title = "Life expectancy over time",
-    y = "Life expectancy (years)",
+    y = "Life expectancy",
     x = "Year",
     color = "Continent"
   )
@@ -116,7 +116,7 @@ p_gdp_bare <- ggplot(
   labs(
     title = "GDP per capita over time",
     x = "Year",
-    y = "GDP per capita (USD)",
+    y = "GDP per capita",
     color = "Continent"
   )
 
@@ -144,27 +144,61 @@ p_bubble +
   )
 
 # OPTIONAL: map inset --------------------------------------------------------
-# This is a common inset you often see
+# A locator map paired with a data plot
+# (Germany vs Poland life expectancy) and insets a Europe map showing
+# where the two highlighted countries sit.
+# Requires optional packages rnaturalearth + sf (see install_packages.R).
 
-library(rnaturalearth)
-library(sf)
+library(sf) # needed so geom_sf can plot sf objects
 
-gap_europe <- gapminder |> filter(continent == "Africa")
+highlight_colors <- c(Germany = "#E69F00", Poland = "#0072B2")
 
-world <- ne_countries(scale = "medium", returnclass = "sf")
-europe_names <- unique(gap_europe$country) # gap_europe from Module 3
+gap_europe <- gapminder |> filter(continent == "Europe")
+
+# Plot life expectancy lines for all European countries,
+# but highlight and label Germany and Poland
+p_europe <- ggplot(
+  gap_europe,
+  aes(x = year, y = lifeExp, color = country, group = country)
+) +
+  geom_line(linewidth = 1) +
+  scale_color_manual(values = highlight_colors) +
+  gghighlight::gghighlight(
+    country %in% names(highlight_colors),
+    # make unhighlighted lines thin, light, and semi-transparent
+    unhighlighted_params = list(
+      linewidth = 0.5,
+      color = "grey80",
+      alpha = 0.8
+    )
+  ) +
+  theme_workshop() +
+  labs(
+    title = "Life expectancy in Europe",
+    x = "Year",
+    y = "Life expectancy"
+  )
+
+# Get a world map and flag the highlighted countries
+world <- rnaturalearth::ne_countries(scale = "medium", returnclass = "sf")
+world$highlight <- ifelse(
+  world$name_long %in% names(highlight_colors),
+  world$name_long,
+  "Other"
+)
 
 p_map <- ggplot(world) +
-  geom_sf(
-    aes(fill = name_long %in% europe_names),
-    color = NA
-  ) +
+  geom_sf(aes(fill = highlight), color = "white", linewidth = 0.2) +
   scale_fill_manual(
-    values = c("TRUE" = "#0072B2", "FALSE" = "grey85"),
+    values = c(highlight_colors, Other = "grey85"),
     guide = "none"
   ) +
-  theme_void()
+  coord_sf(xlim = c(-15, 40), ylim = c(34, 72), expand = FALSE) +
+  theme_void() +
+  theme(
+    panel.border = element_rect(color = "black", fill = NA, linewidth = 0.5)
+  )
 
-p_bubble +
-  gghighlight::gghighlight(country %in% gap_europe$country) +
-  inset_element(p_map, left = 0.01, bottom = 0.6, right = 0.4, top = 0.999)
+# Combine both
+p_europe +
+  inset_element(p_map, left = 0.6, bottom = 0.01, right = 1, top = 0.35)

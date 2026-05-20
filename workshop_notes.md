@@ -314,59 +314,67 @@ scico_palette_names(categorical = TRUE)
 
 ## Module 4: patchwork
 
-- In scientific works it's very common to have nested and combined plots like these
+### Slides
 
-Slide 1: Show a plot that is built of 3 subplots. Use the example from the live demo with a nice color scale from scico.
-Slide 2: Show a plot with an inset. Use the example from the live demo.
+- In scientific work it's very common to have nested and combined plots
+- `patchwork` is the ggplot2 extension package for composing plots — exactly the kind of thing you'd otherwise reach for Inkscape or PowerPoint to do, but here it stays reproducible inside the ggplot pipeline
+- The patchwork docs are excellent — point students there for anything beyond what we cover
 
-- In the ggplot2 universe, there is a really cool package that does this 
-- Called patchwork
+Slide: Destination — a finished 3-panel composite with collected legend + A/B/C tags. Live-rendered from the demo plots so the slide can't drift from the demo.
+Slide: Meet patchwork — header, one-line description, link to https://patchwork.data-imaginist.com/.
 
-Slide: Just a header and a link to the patchwork doc
+- Switch to live demo
 
 ### Live demo
 
 #### Intro
 
-- Here we have 3 separate plots from the same data
-- Show the plots
-#### Combine plots
+- Here we have 3 plots built from the same gapminder data: the bubble, mean life expectancy over time per continent, mean GDP per capita over time per continent
+- Quick teaching point before we compose anything: when you plan to combine plots, **assign them to named variables first**. patchwork can only combine plot objects.
+- Show the three plots in turn
 
-- As soon as you loaded the patchwork package you can use `+`,  `/` and `|` to combine plots
-	- DISCUSS: What is the difference between `/` and `|`
-- Show:
+#### Combine two plots
+
+- Once patchwork is loaded, you can combine plots with `+` and `/`
+  - `+` places plots side by side
+  - `/` stacks plots vertically
 ```r
 p_bubble + p_life # side by side
 p_life / p_gdp # stacked
 ```
-- You can also create more fancy designs using brackets to group plots
+
+#### Adding a third plot
+
+- For three plots, use brackets to group — works just like arithmetic
 ```r
-p_bubble / (p_gdp + p_life)
+p_bubble / (p_gdp + p_life)   # bubble on top, two lines below
+(p_bubble + p_life) / p_gdp   # bubble + life on top, GDP anchors below
 ```
+- Ask the room: which arrangement tells the story better?
 
-#### Apply layout
+#### Apply layout and annotation
 
-- You can add new layers on the combined plot level with `+`, just like you do in a ggplot
-- You can add a plot layout layer where you can: collect common axes and legends
+- You can add layers on the composition with `+`, just like you do on a single ggplot
+- `plot_layout()` collects shared elements — all three plots share the continent legend and the year axis; no need to repeat them
 ```r
 p_life / p_gdp +
   plot_layout(guides = "collect", axes = "collect", axis_titles = "collect")
 ```
 
-#### Add annotation
-
-- You can also annotate the plot, e.g. adding letters to indicate panels:
+- `plot_annotation()` adds things at the *composition* level, e.g. automatic panel tags
 ```r
 p_life / p_gdp +
   plot_layout(guides = "collect", axes = "collect", axis_titles = "collect") +
   plot_annotation(tag_levels = "A", tag_suffix = ")")
 ```
 
-#### Add new layers to the plot
+#### Apply layers to every panel with `&`
 
-- You can also apply ggplot layers at the individual plot layer. 
-- For this you need to use `&` rather than `+`
-
+- Now look at the three plot definitions: each one carries its own `theme_workshop()` and its own `scale_color_scico_d(palette = "batlow")`. That's redundant — if I want to change the theme, I have to change it in three places.
+- patchwork lets us factor shared layers out and apply them once across the whole composition
+- The operator is `&` — applies the layer to **every panel**; `+` only adds at the composition level
+- Step 1: build `_bare` versions of the plots — strip `theme_workshop()` and the scale (and `geom_line()` for the demo) out of each individual plot
+- Step 2: apply them once with `&`
 ```r
 p_life_bare /
   p_gdp_bare +
@@ -376,10 +384,12 @@ p_life_bare /
   scale_color_scico_d(palette = "batlow") &
   theme_workshop()
 ```
+- High-leverage idea: define once, apply everywhere. This is what makes patchwork worth learning beyond just "put two plots next to each other".
 
 #### Insets (if time allows)
 
-- You can also inset elements into each other
+- `inset_element()` places one plot inside another
+- Coordinates are fractions of the parent panel (0 = left/bottom, 1 = right/top)
 ```r
 p_bubble +
   inset_element(
@@ -390,6 +400,12 @@ p_bubble +
     top = 0.4
   )
 ```
+- Bonus if still time: the final script has a Europe locator map inset into the Module 3 lines plot — a more typical paper-figure pattern. Either demo it or just point students to it. **Skip this whole section if running behind.**
 
 ### Exercise
-- DISCUSS what could be a good and straight forward exercise
+
+- Open `exercises/04_patchwork_exercise.R`
+- Asia data (a different subset from the demo): scatter, life-expectancy lines, GDP lines, already styled in steelblue
+- Tasks: stack two plots → arrange all three with `()` → apply `theme_workshop()` with `&` → add A/B/C tags via `plot_annotation()`
+- Stretch: try `inset_element()` on a corner of `p_scatter`
+- Catch-up: `solutions/04_patchwork_final.R`

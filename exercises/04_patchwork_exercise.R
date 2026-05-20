@@ -19,7 +19,7 @@ gap_asia <- gapminder |> filter(continent == "Asia")
 gap_asia_summary <- gap_asia |>
   group_by(year) |>
   summarise(
-    mean_lifeExp   = mean(lifeExp),
+    mean_lifeExp = mean(lifeExp),
     mean_gdpPercap = mean(gdpPercap),
     .groups = "drop"
   )
@@ -36,11 +36,14 @@ p_scatter <- ggplot(
 ) +
   geom_point(alpha = 0.7, color = "steelblue") +
   scale_x_log10(labels = label_dollar(accuracy = 1)) +
-  scale_size(labels = label_number(scale_cut = cut_short_scale()), guide = "none") +
+  scale_size(
+    labels = label_number(scale_cut = cut_short_scale()),
+    guide = "none"
+  ) +
   labs(
     title = "Asia 2007",
     x = "GDP per capita (USD, log scale)",
-    y = "Life expectancy (years)"
+    y = "Life expectancy"
   )
 
 p_life_asia <- ggplot(
@@ -50,8 +53,8 @@ p_life_asia <- ggplot(
   geom_line(linewidth = 1, color = "steelblue") +
   labs(
     title = "Life expectancy over time",
-    x = NULL,
-    y = "Life expectancy (years)"
+    x = "Year",
+    y = "Life expectancy"
   )
 
 p_gdp_asia <- ggplot(
@@ -62,33 +65,28 @@ p_gdp_asia <- ggplot(
   scale_y_continuous(labels = label_dollar(accuracy = 1)) +
   labs(
     title = "GDP per capita over time",
-    x = NULL,
-    y = "GDP per capita (USD)"
+    x = "Year",
+    y = "GDP per capita"
   )
 
 # Task 1: Combine two plots --------------------------------------------------
 
 # Stack p_scatter and p_life_asia vertically.
 
-
 # Task 2: Add the third plot -------------------------------------------------
 
 # Arrange all three plots so the scatter is on the left and the two line charts
 # are stacked on the right. Use () to group panels.
 
-
 # Task 3: Apply theme_workshop() with & --------------------------------------
 
 # Apply theme_workshop() to the whole composition using &.
-# Also move any axis label that is "NULL" to reduce clutter.
-
 
 # Task 4: Add panel tags -----------------------------------------------------
 
 # Add automatic A/B/C panel tags using plot_annotation().
 
-
-# Stretch: Inset -------------------------------------------------------------
+# If you have time: Inset ----------------------------------------------------
 
 # Place p_life_asia as a small inset in a corner of p_scatter.
 # Adjust left/bottom/right/top until the positioning looks good.

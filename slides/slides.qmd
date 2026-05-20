@@ -456,9 +456,7 @@ Simulates how your figure looks under common types of colour vision deficiency.
 ```{r}
 #| output-location: slide
 library(colorBlindness)
-# Shrink text via the `text` parent — the inheritance tree from Module 1
-# cascades the change to axis text, legend title, and legend labels, so
-# the 4-panel cvdPlot output stays readable.
+# Shrink text so the 4-panel cvdPlot output stays readable.
 cvdPlot(p_bubble + theme(text = element_text(size = 8)))
 ```
 
@@ -498,12 +496,88 @@ Stuck? See `solutions/02_color_final.R`.
 
 # Module 4: Multi-panel layouts
 
-## Coming up
+```{r}
+#| label: m4-setup
+#| include: false
+gap_continent <- gapminder |>
+  group_by(year, continent) |>
+  summarise(
+    mean_lifeExp = mean(lifeExp),
+    mean_gdpPercap = mean(gdpPercap),
+    .groups = "drop"
+  )
 
-*(Slides to be built, see `workshop_notes.md`.)*
+p_bubble_m4 <- ggplot(
+  gap_2007,
+  aes(x = gdpPercap, y = lifeExp, color = continent, size = pop)
+) +
+  geom_point(alpha = 0.7) +
+  scale_x_log10(labels = label_dollar(accuracy = 1)) +
+  scale_size(labels = label_number(scale_cut = cut_short_scale())) +
+  scale_color_scico_d(palette = "batlow") +
+  theme_workshop(base_size = 16) +
+  labs(
+    x = "GDP per capita (USD, log scale)",
+    y = "Life expectancy",
+    color = "Continent",
+    size = "Population"
+  )
 
-- Composing plots with `patchwork` (`+`, `/`, `()`)
-- Collecting shared legends, `&`, panel tags, insets
+p_life <- ggplot(gap_continent, aes(year, mean_lifeExp, color = continent)) +
+  geom_line(linewidth = 1) +
+  scale_color_scico_d(palette = "batlow") +
+  theme_workshop(base_size = 16) +
+  theme(legend.position = "none") +
+  labs(
+    y = "Life expectancy",
+    color = "Continent",
+    x = "Year"
+  )
+
+p_gdp <- ggplot(gap_continent, aes(year, mean_gdpPercap, color = continent)) +
+  geom_line(linewidth = 1) +
+  scale_y_continuous(labels = label_dollar(accuracy = 1)) +
+  scale_color_scico_d(palette = "batlow") +
+  theme_workshop(base_size = 16) +
+  theme(legend.position = "none")+
+  labs(
+    y = "GDP per capita",
+    color = "Continent",
+    x = "Year"
+  )
+```
+
+## Common multi-panel layouts
+
+```{r}
+#| echo: false
+#| fig-width: 11
+#| fig-height: 6.5
+p_bubble_m4 / (p_gdp + p_life) +
+  plot_layout(guides = "collect") +
+  plot_annotation(tag_levels = "A", tag_suffix = ")")
+```
+
+## The patchwork package
+
+- Compose plots
+- Collect shared legends and axes
+- Tag panels
+- Apply additional plot layers to every panel
+- Place plots inside plots as insets
+
+The [patchwork documentation](https://patchwork.data-imaginist.com/) is excellent
+
+## Live demo
+
+Open `R/04_patchwork.R`.
+
+## Your turn
+
+### Task (~5 min)
+
+> Open `exercises/04_patchwork_exercise.R`
+
 
 # Module 5: Exporting figures
 

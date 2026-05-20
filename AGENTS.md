@@ -33,11 +33,10 @@
 - Built module by module; `workshop_notes.md` currently scripts Intro + Modules 1–2
 
 ## Build progress & open items (handoff)
-- **Slides built so far:** Intro, Module 1 (Themes), and Module 2 (Colour) are fully built in `slides/slides.qmd`. Modules 3–5 are `#` section-divider stubs ("coming up"). Deck renders with `quarto render slides/slides.qmd` (needs the workshop R packages; `slides/slides.html` is gitignored).
+- **Slides built so far:** Intro, Module 1 (Themes), Module 2 (Colour), and Module 4 (Patchwork) are fully built in `slides/slides.qmd`. Modules 3 and 5 are `#` section-divider stubs ("coming up"). Deck renders with `quarto render slides/slides.qmd` (needs the workshop R packages; `slides/slides.html` is gitignored).
 - **Per-module workflow:** (1) instructor scripts the module in `workshop_notes.md`, (2) review/agree on content & length, (3) build the slides and adjust the demo/exercise scripts. Resolve `DISCUSS:` tokens in `workshop_notes.md` directly when there's a clear best answer; otherwise raise them.
 - **Open review items to raise at the relevant module:**
-  - *Modules 2 → 4/5:* colour thread — Module 2 builds the named Okabe `continent_colors`, but Modules 4–5 colour continents with scico `batlow`; decide whether to carry the named vector through.
-  - *Module 4:* the map-inset block in `solutions/04_patchwork_final.R` runs `library(rnaturalearth)`/`sf` live (errors without those optional packages) and names a variable `gap_europe` while filtering `continent == "Africa"` — clean up when building Module 4.
+  - *Module 5:* colour thread — Module 2 builds the named Okabe `continent_colors`; Module 4 went with scico `batlow` (decided). Decide whether Module 5 carries the named vector through or follows Module 4's batlow.
   - *General:* `theme_workshop()`'s default signature passes `ink`/`paper`, which require ggplot2 ≥ 4.0 — make sure the install refreshes ggplot2.
 - **Working preference:** discuss module-specific design decisions when reaching that module, not all upfront.
 
@@ -184,7 +183,7 @@ TODO: Run `03_attention_final.R` end-to-end to verify annotation position looks 
 5. `&` refactor — strip `theme_workshop()` and `scale_color_scico_d()` from individual plots, apply once at composition level; `_bare` plot variants make before/after explicit
 6. `plot_annotation(tag_levels = "A")` — automatic panel tags
 7. `inset_element()` — `p_life` inset into corner of `p_bubble` (if time allows)
-8. Optional map inset at end of final script (commented out, requires `rnaturalearth`)
+8. Optional Europe locator-map inset at end of final script — recreates the Module 3 Germany/Poland story with a map inset (requires `rnaturalearth` + `sf`; skip if running behind)
 
 **Key decision:** Scripts are self-contained — `theme_workshop()` redefined inline with a `# from Module 1` comment.
 
