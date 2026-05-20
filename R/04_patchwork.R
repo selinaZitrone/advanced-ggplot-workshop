@@ -1,98 +1,121 @@
+# Module 4: Multipanel layouts with patchwork
+# If you fall behind, open 04_patchwork_final.R to catch up
+
 library(ggplot2)
 library(dplyr)
 library(gapminder)
 library(patchwork)
 library(scales)
+library(scico)
 
-theme_set(theme_minimal(base_size = 12))
+# theme_workshop() — from Module 1
+theme_workshop <- function(base_size = 16, ink = "grey20", paper = "white") {
+  theme_light(base_size = base_size, ink = ink, paper = paper) %+replace%
+    theme(
+      legend.text  = element_text(size = rel(0.85)),
+      panel.grid.minor = element_blank()
+    )
+}
 
-gap_2007 <- gapminder |> filter(year == 2007)
+# ── Data ──────────────────────────────────────────────────────────────────────
+
+gap_2007 <- gapminder |>
+  filter(year == 2007)
+
 gap_continent <- gapminder |>
   group_by(year, continent) |>
-  summarise(mean_lifeExp = mean(lifeExp), .groups = "drop")
-
-# build three named plots --------------------------------------------------
-
-# Always assign plots to named objects when you want to compose them.
-p_scatter <- ggplot(
-  gap_2007,
-  aes(x = gdpPercap, y = lifeExp, color = continent)
-) +
-  geom_point(alpha = 0.7, size = 3) +
-  scale_x_log10(labels = label_dollar()) +
-  labs(
-    title = "2007 snapshot",
-    x = "GDP per capita",
-    y = "Life expectancy (years)"
+  summarise(
+    mean_lifeExp = mean(lifeExp),
+    mean_gdpPercap = mean(gdpPercap),
+    .groups = "drop"
   )
 
-p_lines <- ggplot(
+# ── Three named plots ─────────────────────────────────────────────────────────
+
+# When you plan to compose plots, always assign them to variables first.
+
+p_bubble <- ggplot(
+  gap_2007,
+  aes(x = gdpPercap, y = lifeExp, color = continent, size = pop)
+) +
+  geom_point(alpha = 0.7) +
+  scale_x_log10(labels = label_dollar(accuracy = 1)) +
+  scale_size(labels = label_number(scale_cut = cut_short_scale())) +
+  scale_color_scico_d(palette = "batlow") +
+  theme_workshop() +
+  labs(
+    title = "2007 snapshot",
+    x = "GDP per capita (USD, log scale)",
+    y = "Life expectancy (years)",
+    color = "Continent",
+    size = "Population"
+  )
+
+p_life <- ggplot(
   gap_continent,
   aes(x = year, y = mean_lifeExp, color = continent)
 ) +
   geom_line(linewidth = 1) +
+  scale_color_scico_d(palette = "batlow") +
+  theme_workshop() +
   labs(
-    title = "Over time",
+    title = "Life expectancy over time",
     x = NULL,
-    y = "Life expectancy (years)"
+    y = "Life expectancy (years)",
+    color = "Continent"
   )
 
-p_box <- ggplot(
-  gap_2007,
-  aes(x = continent, y = lifeExp, color = continent)
+p_gdp <- ggplot(
+  gap_continent,
+  aes(x = year, y = mean_gdpPercap, color = continent)
 ) +
-  geom_boxplot(fill = "white") +
+  geom_line(linewidth = 1) +
+  scale_y_continuous(labels = label_dollar(accuracy = 1)) +
+  scale_color_scico_d(palette = "batlow") +
+  theme_workshop() +
   labs(
-    title = "By continent (2007)",
+    title = "GDP per capita over time",
     x = NULL,
-    y = "Life expectancy (years)"
+    y = "GDP per capita (USD)",
+    color = "Continent"
   )
 
-# basic composition --------------------------------------------------------
+# ── Combining two plots ───────────────────────────────────────────────────────
 
-p_scatter + p_lines      # side by side
-p_scatter / p_lines      # stacked
-(p_scatter + p_lines) / p_box  # 2 on top, 1 below
+# + places plots side by side; / stacks them.
 
-# collect guides and axis titles -------------------------------------------
 
-# guides = "collect" merges identical legends into one.
-# axis_titles = "collect" merges identical axis labels.
-(p_scatter + p_lines) / p_box +
-  plot_layout(guides = "collect") &
-  theme(legend.position = "bottom")
+# ── Adding a third plot ───────────────────────────────────────────────────────
 
-# add panel tags -----------------------------------------------------------
+# Use () to group panels, just like arithmetic.
+# Try both arrangements and notice which tells the story better:
+#   p_bubble / (p_gdp + p_life)   — bubble on top, two lines below
+#   (p_bubble + p_life) / p_gdp   — different emphasis
 
-# Tag panels A/B/C automatically.
-(p_scatter + p_lines) / p_box +
-  plot_layout(guides = "collect") +
-  plot_annotation(tag_levels = "A") &
-  theme(legend.position = "bottom")
 
-# control relative widths and heights --------------------------------------
+# ── Collecting shared legends ─────────────────────────────────────────────────
 
-# widths argument inside plot_layout sets the column proportions.
-(p_scatter + p_lines + plot_layout(widths = c(2, 1))) / p_box
+# All three plots share a continent color legend — there's no need to repeat it.
+# plot_layout(guides = "collect") merges identical legends into one.
 
-# & vs + : apply a theme tweak to all panels ------------------------------
 
-# `&` applies to every plot in the composition.
-# `+` only modifies the last plot.
-(p_scatter + p_lines) / p_box +
-  plot_layout(guides = "collect") &
-  theme(
-    legend.position = "bottom",
-    plot.title = element_text(size = 11, face = "bold")
-  )
+# ── & vs + ───────────────────────────────────────────────────────────────────
 
-# inset_element() ---------------------------------------------------------
+# Right now each plot carries its own theme_workshop() and scale_color_scico_d().
+# That's repetitive — patchwork lets you factor shared layers to the composition level.
+# & applies an expression to every panel; + only modifies the last one.
 
-# Place a smaller plot on top of another.
-p_scatter +
-  inset_element(
-    p_box +
-      theme_void() +
-      theme(legend.position = "none"),
-    left = 0.55, bottom = 0.05, right = 0.98, top = 0.45
-  )
+# Step 1: remove theme_workshop() and scale_color_scico_d() from individual plots
+# Step 2: apply them once with &
+
+
+# ── Panel tags ────────────────────────────────────────────────────────────────
+
+# plot_annotation(tag_levels = "A") labels panels automatically.
+
+
+# ── Inset (if time allows) ────────────────────────────────────────────────────
+
+# inset_element() places a plot on top of another.
+# left/bottom/right/top are fractional coordinates (0–1) within the parent panel.
+

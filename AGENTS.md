@@ -115,7 +115,7 @@ Double-encoding concept mentioned on slides only (works better on line/bar chart
 
 **Packages:** `colorBlindness`, `scico`, `cols4all` (GitHub: mtennekes/cols4all)
 
-### Module 3 — Directing attention (22 min) 🔄 IN PROGRESS
+### Module 3 — Directing attention (22 min) ✅ COMPLETE
 **Scripts:** `R/03_attention.R`, `R/03_attention_final.R`, `exercises/03_attention_exercise.R`
 
 **Demo story: Europe — life expectancy, Germany vs Poland**
@@ -144,31 +144,47 @@ TODO: Run `03_attention_final.R` end-to-end to verify annotation position looks 
 - One principle: "A plot should have one story"
 - When to use direct labels vs legend
 
-### Module 4 — Multipanel with patchwork (18 min) ⏳ NOT STARTED
-**Scripts to create:** `R/04_patchwork.R`, `R/04_patchwork_final.R`, `exercises/04_patchwork_exercise.R`
+### Module 4 — Multipanel with patchwork (18 min) ✅ COMPLETE
+**Scripts:** `R/04_patchwork.R`, `R/04_patchwork_final.R`, `exercises/04_patchwork_exercise.R`
 
-**Keep:**
-- `+` (side by side), `/` (stacked), nested `()` layouts
-- `plot_layout(guides = "collect")`
-- `&` vs `+` for applying theme to all panels
-- `plot_annotation(tag_levels = "A")`
-- `inset_element()` — keep as "wow" moment but cut if time is short
+**Three plots used (all colored by continent via `scale_color_scico_d(palette = "batlow")`):**
+- `p_bubble` — gdpPercap vs lifeExp, sized by pop (2007 snapshot) — recurring anchor
+- `p_life` — mean lifeExp over time by continent (line chart)
+- `p_gdp` — mean GDP per capita over time by continent (line chart)
 
-**Replace:** boxplot panel with bar chart of median GDP by continent (echoes bubble chart x-variable)
+**Data objects:**
+- `gap_2007` — filtered to year == 2007
+- `gap_continent` — mean lifeExp and mean gdpPercap per continent per year
 
-### Module 5 — Export (10 min) ⏳ NOT STARTED
-**Scripts to create:** `R/05_export.R`, `R/05_export_final.R`
+**Narrative arc:**
+1. Assign three named plot objects (assign when composing)
+2. Two-plot composition: `+` (side by side), `/` (stacked)
+3. Three-panel layout with `()` grouping — discuss which arrangement tells the story better
+4. `plot_layout(guides = "collect")` — merge identical continent legends
+5. `&` refactor — strip `theme_workshop()` and `scale_color_scico_d()` from individual plots, apply once at composition level; `_bare` plot variants make before/after explicit
+6. `plot_annotation(tag_levels = "A")` — automatic panel tags
+7. `inset_element()` — `p_life` inset into corner of `p_bubble` (if time allows)
+8. Optional map inset at end of final script (commented out, requires `rnaturalearth`)
 
-**Keep:**
-- `ggsave()` with explicit width/height/units/dpi
-- Target sizes: paper figure (~3.5 in), presentation (~6 in), poster (~8 in)
-- `ragg::agg_png()` for crispy text
-- Show `base_size = 11/12` for publication vs `base_size = 16` for screenshare
-- Mention `showtext`/system fonts briefly
+**Key decision:** Scripts are self-contained — `theme_workshop()` redefined inline with a `# from Module 1` comment.
+
+### Module 5 — Export (10 min) ✅ COMPLETE
+**Scripts:** `R/05_export.R`, `R/05_export_final.R`, `exercises/05_export_exercise.R`
+
+**Narrative arc:**
+1. Default `ggsave()` — no dimensions, problem with reproducibility
+2. Explicit `width`/`height`/`units`/`dpi` — target sizes: paper 89 mm, slide 150 mm, poster 200 mm
+3. `ggview()` — preview at exact export size in plot pane before saving
+4. `base_size` payoff: `base_size = 16` for screenshare → `base_size = 11/12` for print
+5. `device = ragg::agg_png` — cross-platform, sharper text
+6. `device = cairo_pdf` — embedded fonts for journal submission
+7. `showtext` — brief mention for custom/Google fonts (commented example)
+
+**Exercise:** Uses Asia summary line chart (single color, no legend — simpler than demo).
 
 ## Packages used across workshop
 - ggplot2, dplyr, gapminder, scales
 - colorBlindness, scico, cols4all (GitHub)
 - gghighlight, ggrepel, ggtext
 - patchwork
-- ragg
+- ragg, ggview
