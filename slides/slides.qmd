@@ -1,0 +1,479 @@
+---
+title: "From default to publication-ready ggplot2"
+subtitle: "A hands-on workshop"
+author: "Selina Baldauf"
+format:
+  revealjs:
+    slide-number: true
+    code-line-numbers: false
+    highlight-style: github
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(ggplot2)
+library(dplyr)
+library(gapminder)
+library(scales)
+library(patchwork)
+
+# "Before" plots should show the ggplot2 default look
+theme_set(theme_grey())
+
+gap_2007 <- gapminder |> filter(year == 2007)
+
+# The theme we build together in Module 1 (lives in solutions/theme.R)
+theme_workshop <- function(base_size = 16, ink = "grey20", paper = "white") {
+  theme_light(base_size = base_size, ink = ink, paper = paper) %+replace%
+    theme(
+      legend.text = element_text(size = rel(0.85)),
+      panel.grid.minor = element_blank()
+    )
+}
+
+# The recurring bubble chart (default colors, no theme layer)
+p_bubble <- ggplot(
+  gap_2007,
+  aes(x = gdpPercap, y = lifeExp, color = continent, size = pop)
+) +
+  geom_point() +
+  scale_x_log10(labels = label_dollar(accuracy = 1)) +
+  scale_size(labels = label_number(scale_cut = cut_short_scale())) +
+  labs(
+    x = "GDP per capita (USD, log scale)",
+    y = "Life expectancy (years)",
+    color = "Continent",
+    size = "Population"
+  )
+```
+
+# Intro
+
+## Default → publication-ready
+
+A ggplot is easy to make. A *publication-ready* ggplot takes a few more deliberate choices.
+
+So many things you can tune:
+
+- The plot itself — which geoms to pick
+- Themes, colours, fonts
+- How to highlight your results
+- Combining plots into panels
+- Exporting at a readable size for the target medium
+
+. . .
+
+Different outputs want different tweaks — a **poster** or **talk** is not a **journal figure**.
+
+## It's a rabbit hole
+
+- ggplot2 has a whole ecosystem of extension packages for all of this
+- You can spend endless time here
+
+. . .
+
+Today I'll show you a handful of **techniques and packages I find genuinely useful** — not an exhaustive tour, there's much more.
+
+## Today
+
+We'll focus on:
+
+1. **Custom themes** — a consistent look, defined once
+2. **Colour** — with intent, and colourblind-safe
+3. **Directing attention** — guide the reader to the story
+4. **Multi-panel layouts** — combine plots with `patchwork`
+5. **Exporting** — at the right size and resolution
+
+…plus a few other handy extension packages along the way.
+
+## How it works
+
+- There's a **GitHub repo** you download and open in your IDE (I'll use Positron)
+- I demonstrate each topic — **follow along or just watch**, both are fine
+- Each module has a short **exercise** to play with the concept
+- **Questions** anytime: in the chat or just unmute
+
+## Get set up
+
+1. Click the green **Code** button → **Download ZIP**
+2. Unzip it somewhere you can find it
+3. Double-click the `.Rproj` file → opens in RStudio
+   - *(Positron users: open the folder)*
+4. Run `install_packages.R` to install today's packages
+
+. . .
+
+Repo: **[link in the chat]**
+
+# Module 1: Custom themes
+
+## The default isn't publication-ready
+
+```{r}
+#| echo: false
+p_bubble
+```
+
+## Built-in themes: a quick win
+
+Add a `theme_*()` layer and the whole look changes.
+
+```{r}
+#| echo: false
+#| fig-width: 12
+#| fig-height: 5.5
+mini <- function(th, name) {
+  p_bubble +
+    th +
+    labs(title = name, x = NULL, y = NULL) +
+    theme(legend.position = "none", plot.title = element_text(size = 13))
+}
+wrap_plots(
+  list(
+    mini(theme_grey(), "theme_grey()"),
+    mini(theme_bw(), "theme_bw()"),
+    mini(theme_light(), "theme_light()"),
+    mini(theme_minimal(), "theme_minimal()"),
+    mini(theme_classic(), "theme_classic()")
+  ),
+  nrow = 2
+)
+```
+
+## Further customization with `theme()`
+
+A theme controls everything that isn't data: Fonts, sizes, colours, grid lines, spacing, legends, ...
+
+<iframe src="ggplot_theme_system_cheatsheet.pdf" width="100%" height="460" style="border:none;"></iframe>
+
+::: {.aside}
+ggplot2 theme-system cheatsheet (Henry Wang). Open the PDF in `slides/` for the full reference.
+:::
+
+## Inheritance of `theme` elements
+
+```
+text  ──┬── axis.text  ──┬── axis.text.x
+        │                └── axis.text.y
+        ├── plot.title
+        ├── plot.subtitle
+        └── legend.text
+
+line  ──┬── axis.line   ──┬── axis.line.x
+        │                 └── axis.line.y
+        ├── axis.ticks
+        └── panel.grid   ─── panel.grid.major / minor
+
+rect  ──┬── plot.background
+        └── panel.background
+```
+
+- Set a **parent** and it affects all its **children**
+- E.g. Change `text` once and every piece of text updates
+
+## How to change a theme
+
+```{r}
+p_bubble +
+  theme_light(base_size = 18) +
+  theme(
+    legend.text = element_text(size = rel(0.85)),
+    panel.grid.minor = element_blank()
+  )
+```
+
+## Live demo
+
+Open `R/01_themes.R` to follow along or just watch and wait for the exercise.
+
+## Build a custom theme function
+
+```{r}
+#| eval: false
+# Write a custom theme function using theme light as a basis
+theme_workshop <- function(base_size = 16) {
+  theme_light(base_size = base_size) %+replace%
+    theme(
+      legend.text = element_text(size = rel(0.85)),
+      panel.grid.minor = element_blank()
+    )
+}
+
+# Apply the custom theme
+p_bubble + theme_workshop(base_size = 18)
+```
+
+## Put the theme in its own file
+
+- Good practice: Save the theme function in its own file (e.g. `R/theme.R`) and `source()` it across scripts:
+
+```r
+source(here::here("R", "theme.R"))
+p_bubble + theme_workshop()
+```
+
+## Set a global theme with `theme_set()`
+
+Set the theme once at the top of your script (or in `theme.R`) and every plot in the session picks it up.
+
+```r
+# This theme will be used for every plot in the session
+theme_set(theme_workshop())
+
+
+# each plot uses theme_workshop() automatically
+# no need to specify the theme again and again
+p_bubble            
+```
+
+## Your turn
+
+### Task (~5 min)
+
+> Open `exercises/01_themes_exercise.R`
+
+- Create a theme file `exercises/theme_custom.R`
+- In it, write `theme_custom()` based on a built-in theme of your choice
+- Source it in the exercise script and apply `theme_custom()` to `p_lines`
+
+**Finished early?** Try different `base_size` values, or add more customizations.
+
+Stuck? See `solutions/01_themes_final.R`.
+
+# Module 2: Colour with intent
+
+```{r}
+#| label: m2-setup
+#| include: false
+library(scico)
+
+okabe <- palette.colors(palette = "Okabe-Ito")
+continent_colors <- c(
+  Africa = okabe[[2]], Americas = okabe[[3]], Asia = okabe[[4]],
+  Europe = okabe[[6]], Oceania = okabe[[1]]
+)
+
+# strip of discrete colours
+swatch_discrete <- function(cols) {
+  df <- data.frame(x = seq_along(cols))
+  ggplot(df, aes(x, 1, fill = factor(x))) +
+    geom_tile(width = 0.95) +
+    scale_fill_manual(values = unname(cols), guide = "none") +
+    theme_void()
+}
+
+# smooth strip from many colours
+swatch_ramp <- function(cols) {
+  ggplot(data.frame(x = seq_along(cols)), aes(x, 1, fill = x)) +
+    geom_raster() +
+    scale_fill_gradientn(colours = cols, guide = "none") +
+    theme_void()
+}
+
+# stacked, titled ramps
+ramp_panel <- function(named_cols) {
+  strips <- lapply(names(named_cols), function(nm) {
+    swatch_ramp(named_cols[[nm]]) +
+      labs(title = nm) +
+      theme(plot.title = element_text(size = 12, hjust = 0))
+  })
+  patchwork::wrap_plots(strips, ncol = 1)
+}
+```
+
+## Three kinds of palette
+
+:::: {.columns}
+
+::: {.column width="33%"}
+**Qualitative**
+
+```{r}
+#| echo: false
+#| fig-width: 3.2
+#| fig-height: 0.7
+swatch_discrete(continent_colors)
+```
+
+Distinct categories (e.g. continents)
+:::
+
+::: {.column width="33%"}
+**Sequential**
+
+```{r}
+#| echo: false
+#| fig-width: 3.2
+#| fig-height: 0.7
+swatch_ramp(viridisLite::viridis(256))
+```
+
+Ordered, low to high (e.g. life expectancy)
+:::
+
+::: {.column width="33%"}
+**Diverging**
+
+```{r}
+#| echo: false
+#| fig-width: 3.2
+#| fig-height: 0.7
+swatch_ramp(scico::scico(256, palette = "vik"))
+```
+
+Above / below a midpoint
+:::
+
+::::
+
+## Two things that matter
+
+For scientific figures:
+
+1. **Intuitive** colours that match what your reader expects
+2. **Colourblind-safe** colours (about 1 in 12 men has a colour vision deficiency)
+
+## Pick intuitive colours
+
+```{r}
+#| echo: false
+#| out-width: 65%
+#| fig-align: center
+knitr::include_graphics("intuitive_colors.png")
+```
+
+Use colours your reader already associates with the thing (warm = hot, blue = water).
+
+[Blogpost on colours by Lisa Charlotte Muth (Datawrapper)](https://www.datawrapper.de/blog/colors)
+
+## Okabe-Ito (base R)
+
+A colourblind-safe qualitative palette, built into base R.
+
+```{r}
+#| echo: false
+#| fig-width: 9
+#| fig-height: 1
+swatch_discrete(okabe)
+```
+
+- 8 distinct hues plus black and grey, separable under all common CVD types
+- `palette.colors(palette = "Okabe-Ito")` (no package needed)
+- We skip the yellow: low contrast on white
+
+[Source: Okabe & Ito](https://jfly.uni-koeln.de/color/)
+
+## viridis (built into ggplot2)
+
+Perceptually uniform, colourblind- and greyscale-safe. Best for ordered or continuous data.
+
+```{r}
+#| echo: false
+#| fig-width: 9
+#| fig-height: 2.6
+ramp_panel(list(
+  viridis = viridisLite::viridis(256, option = "D"),
+  magma   = viridisLite::viridis(256, option = "A"),
+  plasma  = viridisLite::viridis(256, option = "C"),
+  cividis = viridisLite::viridis(256, option = "E")
+))
+```
+
+`scale_colour_viridis_d()` / `_c()` · [docs](https://ggplot2.tidyverse.org/reference/scale_viridis.html)
+
+## scico (scientific colour maps)
+
+```{r}
+#| echo: false
+#| fig-width: 9
+#| fig-height: 2.6
+ramp_panel(list(
+  batlow = scico::scico(256, palette = "batlow"),
+  roma   = scico::scico(256, palette = "roma"),
+  vik    = scico::scico(256, palette = "vik"),
+  lajolla = scico::scico(256, palette = "lajolla")
+))
+```
+
+- Perceptually uniform and colourblind-safe
+- Made for science: fair, readable, **citable**
+
+[scico package](https://github.com/thomasp85/scico) · [colour maps by Fabio Crameri](https://www.fabiocrameri.ch/colourmaps/)
+
+## Check it: `cvdPlot()` {.smaller}
+
+*Reference slide*
+
+```r
+library(colorBlindness)
+cvdPlot(p_okabe)
+```
+
+Simulates how your figure looks under common types of colour vision deficiency (deuteranopia, protanopia, desaturated).
+
+## Browse palettes: `cols4all` {.smaller}
+
+*Reference slide*
+
+```r
+# install.packages("pak"); pak::pak("mtennekes/cols4all")
+library(cols4all)
+c4a_gui()
+```
+
+Interactive palette browser with built-in CVD simulation. (Windows: needs RTools to install from GitHub.)
+
+[cols4all](https://github.com/mtennekes/cols4all)
+
+## Live demo
+
+Open `R/02_color.R`.
+
+1. `cvdPlot()` the default, who can't read it?
+2. Apply Okabe-Ito colours manually
+3. A **named** colour vector for consistent continents
+4. viridis and scico scale functions
+
+## Your turn
+
+### Task (~5 min)
+
+> Open `exercises/02_color_exercise.R`
+
+- Apply a colourblind-safe palette (viridis or scico) to the line chart
+- Check it with `cvdPlot()`
+- **Stretch:** build a named vector so each continent keeps its colour
+
+Stuck? See `solutions/02_color_final.R`.
+
+# Module 3: Directing attention
+
+## Coming up
+
+*(Slides to be built, see `workshop_notes.md`.)*
+
+- From spaghetti to a single story
+- `gghighlight`, `ggrepel`, `ggtext`, `annotate()`
+
+# Module 4: Multi-panel layouts
+
+## Coming up
+
+*(Slides to be built, see `workshop_notes.md`.)*
+
+- Composing plots with `patchwork` (`+`, `/`, `()`)
+- Collecting shared legends, `&`, panel tags, insets
+
+# Module 5: Exporting figures
+
+## Coming up
+
+*(Slides to be built, see `workshop_notes.md`.)*
+
+- `ggsave()` dimensions and dpi
+- `ggview()` preview, `base_size` for print, `ragg` / `cairo_pdf`
