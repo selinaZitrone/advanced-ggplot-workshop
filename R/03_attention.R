@@ -1,5 +1,5 @@
 # Module 3: Directing attention
-# If you fall behind, open 03_attention_final.R to catch up
+# If you fall behind, open solutions/03_attention_final.R to catch up
 
 library(ggplot2)
 library(dplyr)
@@ -9,12 +9,12 @@ library(ggrepel)
 library(ggtext)
 library(scales)
 
-source(here::here("R", "01_themes_final.R"))
+source(here::here("R", "theme.R")) # theme_workshop() (you create theme.R in Module 1)
 theme_set(theme_workshop())
 
 gap_europe <- gapminder |> filter(continent == "Europe")
 
-# ── The default: a spaghetti chart ────────────────────────────────────────────
+# The default: a spaghetti chart ---------------------------------------------
 
 p_default <- ggplot(gap_europe, aes(x = year, y = lifeExp, color = country)) +
   geom_line(linewidth = 1) +
@@ -25,22 +25,21 @@ p_default <- ggplot(gap_europe, aes(x = year, y = lifeExp, color = country)) +
 
 p_default
 
-# ── gghighlight: dim everything except Germany and Poland ─────────────────────
+# gghighlight: dim everything except Germany and Poland ----------------------
 
 
 
-# ── Assign deliberate colors ──────────────────────────────────────────────────
+# Assign deliberate colors ---------------------------------------------------
 
 
 
-# ── ggrepel: label the endpoints, drop the legend ─────────────────────────────
+# ggrepel: label the endpoints, drop the legend ------------------------------
 
 
 
-# ── ggtext: tell the story in the title ───────────────────────────────────────
+# ggtext: tell the story in the title ----------------------------------------
 
 
 
-# ── annotate(): a contextual note ─────────────────────────────────────────────
-
+# annotate(): a contextual note ----------------------------------------------
 

@@ -9,12 +9,12 @@ library(ggrepel)
 library(ggtext)
 library(scales)
 
-source(here::here("R", "01_themes_final.R"))
+source(here::here("solutions", "theme.R"))
 theme_set(theme_workshop())
 
 gap_asia <- gapminder |> filter(continent == "Asia")
 
-# Starting point: GDP per capita in Asia — another spaghetti chart
+# Starting point: GDP per capita in Asia, another spaghetti chart
 p <- ggplot(gap_asia, aes(x = year, y = gdpPercap, color = country)) +
   geom_line(linewidth = 1) +
   scale_y_continuous(labels = label_dollar()) +
@@ -32,7 +32,7 @@ p
 
 # 4. Write a ggtext title that names both countries in their colors.
 
-# stretch ------------------------------------------------------------------
+# Stretch --------------------------------------------------------------------
 
 # 5. Add an annotate() label marking China's economic reform period (1978).
-#    No arrow needed — just a text label placed near the China line.
+#    No arrow needed, just a text label placed near the China line.

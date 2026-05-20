@@ -1,5 +1,5 @@
 # Module 5: Exporting figures
-# If you fall behind, open 05_export_final.R to catch up
+# If you fall behind, open solutions/05_export_final.R to catch up
 
 library(ggplot2)
 library(dplyr)
@@ -10,21 +10,13 @@ library(ragg)
 library(ggview)
 library(here)
 
-# theme_workshop() — from Module 1
-theme_workshop <- function(base_size = 16, ink = "grey20", paper = "white") {
-  theme_light(base_size = base_size, ink = ink, paper = paper) %+replace%
-    theme(
-      legend.text = element_text(size = rel(0.85)),
-      panel.grid.minor = element_blank()
-    )
-}
-
+source(here::here("R", "theme.R")) # theme_workshop() (you create theme.R in Module 1)
 theme_set(theme_workshop())
 
 # Create an output directory for saved figures
 dir.create(here("plots"), showWarnings = FALSE)
 
-# ── The recurring plot ────────────────────────────────────────────────────────
+# The recurring plot ---------------------------------------------------------
 
 gap_2007 <- gapminder |> filter(year == 2007)
 
@@ -45,12 +37,12 @@ p_bubble <- ggplot(
 
 p_bubble
 
-# ── The problem with default ggsave() ────────────────────────────────────────
+# The problem with default ggsave() ------------------------------------------
 
 # No explicit dimensions: ggsave() uses whatever size the plot pane happens to be.
-# The font size that looked right at base_size = 16 on screen may look huge in print.
+# The font that looked right at base_size = 16 on screen may look huge in print.
 
-# ── Set dimensions explicitly ─────────────────────────────────────────────────
+# Set dimensions explicitly --------------------------------------------------
 
 # Always specify width, height, units, and dpi.
 # Target sizes used in practice:
@@ -58,36 +50,33 @@ p_bubble
 #   Presentation slide:           ~150 mm (~6 in)
 #   Poster panel:                 ~200 mm (~8 in)
 
-# ── Preview at export size with ggview() ─────────────────────────────────────
+# Preview at export size with ggview() ---------------------------------------
 
 # Before saving, use ggview() to see the plot at the exact output dimensions
-# in the plot pane — no need to save, open and re-open while iterating.
+# in the plot pane, no need to save and re-open while iterating.
 
-# ── base_size for screen vs. print ───────────────────────────────────────────
+# base_size for screen vs. print ---------------------------------------------
 
 # base_size = 16 was chosen for screenshare readability.
-# At 89 mm / 300 dpi, that same font is too large.
+# At 89 mm / 300 dpi that same font is too large.
 # Match base_size to the output size, not the screen.
 
-# ── ragg: crisp text on any machine ──────────────────────────────────────────
+# Render with ragg -----------------------------------------------------------
 
-# The default PNG renderer uses your system antialiaser — results vary across
-# platforms and can produce fuzzy text.
-# ragg::agg_png() is cross-platform, handles Unicode and ligatures cleanly,
-# and produces sharper output. Pass it as the device argument to ggsave().
+# The default PNG renderer varies across platforms and can produce fuzzy text.
+# ragg::agg_png() is cross-platform and sharper. Pass it as the device argument.
 
-# ── PDF with embedded fonts ───────────────────────────────────────────────────
+# PDF with embedded fonts ----------------------------------------------------
 
-# cairo_pdf embeds fonts in the file — important for journal submission.
-# The default pdf() does not embed fonts, which can cause rendering issues
-# for reviewers or typesetters.
+# cairo_pdf embeds fonts in the file, important for journal submission.
+# The default pdf() does not embed fonts, which can cause rendering issues.
 
-# ── showtext (brief mention) ──────────────────────────────────────────────────
+# showtext (brief mention) ---------------------------------------------------
 
-# If you want to use Google Fonts or custom system fonts, the showtext package
-# loads them before rendering:
+# To use Google Fonts or custom system fonts, load them with the showtext package
+# before rendering. Add a base_family argument to theme_workshop() to wire it in.
 #
 # library(showtext)
 # font_add_google("Lato", "lato")
 # showtext_auto()
-# theme_workshop(base_family = "lato")  # add base_family arg to the function
+# theme_workshop(base_family = "lato") # add base_family arg to the function

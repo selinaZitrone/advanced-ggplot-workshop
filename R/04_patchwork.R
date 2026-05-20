@@ -1,5 +1,5 @@
 # Module 4: Multipanel layouts with patchwork
-# If you fall behind, open 04_patchwork_final.R to catch up
+# If you fall behind, open solutions/04_patchwork_final.R to catch up
 
 library(ggplot2)
 library(dplyr)
@@ -8,16 +8,9 @@ library(patchwork)
 library(scales)
 library(scico)
 
-# theme_workshop() — from Module 1
-theme_workshop <- function(base_size = 16, ink = "grey20", paper = "white") {
-  theme_light(base_size = base_size, ink = ink, paper = paper) %+replace%
-    theme(
-      legend.text  = element_text(size = rel(0.85)),
-      panel.grid.minor = element_blank()
-    )
-}
+source(here::here("R", "theme.R")) # theme_workshop() (you create theme.R in Module 1)
 
-# ── Data ──────────────────────────────────────────────────────────────────────
+# Data -----------------------------------------------------------------------
 
 gap_2007 <- gapminder |>
   filter(year == 2007)
@@ -30,9 +23,9 @@ gap_continent <- gapminder |>
     .groups = "drop"
   )
 
-# ── Three named plots ─────────────────────────────────────────────────────────
+# Three named plots ----------------------------------------------------------
 
-# When you plan to compose plots, always assign them to variables first.
+# When you plan to compose plots, assign them to variables first.
 
 p_bubble <- ggplot(
   gap_2007,
@@ -80,42 +73,41 @@ p_gdp <- ggplot(
     color = "Continent"
   )
 
-# ── Combining two plots ───────────────────────────────────────────────────────
+# Combining two plots --------------------------------------------------------
 
 # + places plots side by side; / stacks them.
 
 
-# ── Adding a third plot ───────────────────────────────────────────────────────
+# Adding a third plot --------------------------------------------------------
 
-# Use () to group panels, just like arithmetic.
+# Use () to group panels, like arithmetic.
 # Try both arrangements and notice which tells the story better:
-#   p_bubble / (p_gdp + p_life)   — bubble on top, two lines below
-#   (p_bubble + p_life) / p_gdp   — different emphasis
+#   p_bubble / (p_gdp + p_life)   bubble on top, two lines below
+#   (p_bubble + p_life) / p_gdp   different emphasis
 
 
-# ── Collecting shared legends ─────────────────────────────────────────────────
+# Collecting shared legends --------------------------------------------------
 
-# All three plots share a continent color legend — there's no need to repeat it.
+# All three plots share a continent color legend, no need to repeat it.
 # plot_layout(guides = "collect") merges identical legends into one.
 
 
-# ── & vs + ───────────────────────────────────────────────────────────────────
+# & vs + ---------------------------------------------------------------------
 
-# Right now each plot carries its own theme_workshop() and scale_color_scico_d().
-# That's repetitive — patchwork lets you factor shared layers to the composition level.
+# Each plot carries its own theme_workshop() and scale_color_scico_d().
+# That is repetitive; patchwork can factor shared layers to the composition level.
 # & applies an expression to every panel; + only modifies the last one.
 
 # Step 1: remove theme_workshop() and scale_color_scico_d() from individual plots
 # Step 2: apply them once with &
 
 
-# ── Panel tags ────────────────────────────────────────────────────────────────
+# Panel tags -----------------------------------------------------------------
 
 # plot_annotation(tag_levels = "A") labels panels automatically.
 
 
-# ── Inset (if time allows) ────────────────────────────────────────────────────
+# Inset (if time allows) -----------------------------------------------------
 
 # inset_element() places a plot on top of another.
-# left/bottom/right/top are fractional coordinates (0–1) within the parent panel.
-
+# left/bottom/right/top are fractional coordinates (0-1) within the parent panel.

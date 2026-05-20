@@ -19,3 +19,9 @@ plots/*.svg
 
 # Leftover from sandbox bootstrap (safe to delete)
 test.txt
+
+slides/slides_files/*
+slides/slides.html
+*.pdf
+*.png
+slides/

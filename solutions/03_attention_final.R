@@ -1,5 +1,5 @@
-# Module 3: Directing attention
-# If you fall behind, open 03_attention_final.R to catch up
+# Module 3: Directing attention - FINAL SCRIPT
+# This is the fully worked version. Open this if you fell behind during the demo.
 
 library(ggplot2)
 library(dplyr)
@@ -9,12 +9,12 @@ library(ggrepel)
 library(ggtext)
 library(scales)
 
-source(here::here("R", "01_themes_final.R"))
+source(here::here("solutions", "theme.R")) # loads theme_workshop()
 theme_set(theme_workshop())
 
 gap_europe <- gapminder |> filter(continent == "Europe")
 
-# ── The default: a spaghetti chart ────────────────────────────────────────────
+# The default: a spaghetti chart ---------------------------------------------
 
 # 30 lines, a legend nobody can read, no story.
 p_default <- ggplot(gap_europe, aes(x = year, y = lifeExp, color = country)) +
@@ -26,7 +26,7 @@ p_default <- ggplot(gap_europe, aes(x = year, y = lifeExp, color = country)) +
 
 p_default
 
-# ── gghighlight: dim everything except Germany and Poland ─────────────────────
+# gghighlight: dim everything except Germany and Poland ----------------------
 
 p_highlight <- p_default +
   gghighlight(
@@ -36,9 +36,9 @@ p_highlight <- p_default +
 
 p_highlight
 
-# ── Assign deliberate colors ──────────────────────────────────────────────────
+# Assign deliberate colors ---------------------------------------------------
 
-# Named vector ties back to module 2
+# Named vector ties back to Module 2
 highlight_colors <- c(Germany = "#E69F00", Poland = "#0072B2")
 
 p_colored <- p_default +
@@ -50,7 +50,7 @@ p_colored <- p_default +
 
 p_colored
 
-# ── ggrepel: label the endpoints, drop the legend ─────────────────────────────
+# ggrepel: label the endpoints, drop the legend ------------------------------
 
 endpoints <- gap_europe |>
   filter(year == max(year), country %in% c("Germany", "Poland"))
@@ -68,7 +68,7 @@ p_labeled <- p_colored +
 
 p_labeled
 
-# ── ggtext: tell the story in the title ───────────────────────────────────────
+# ggtext: tell the story in the title ----------------------------------------
 
 # element_markdown() enables HTML/inline CSS in text elements
 p_final <- p_labeled +
@@ -79,7 +79,7 @@ p_final <- p_labeled +
 
 p_final
 
-# ── annotate(): a contextual note ─────────────────────────────────────────────
+# annotate(): a contextual note ----------------------------------------------
 
 p_final +
   annotate(
@@ -93,7 +93,7 @@ p_final +
     fill = "white"
   )
 
-# ── Optional: arrow to 1992 data point (if time allows) ──────────────────────
+# Optional: arrow to 1992 data point (if time allows) ------------------------
 
 p_final +
   annotate(

@@ -1,17 +1,17 @@
 # Module 1: Custom themes
-# If you fall behind, open 01_themes_final.R to catch up
+# If you fall behind, open solutions/01_themes_final.R to catch up
 
 library(ggplot2)
 library(dplyr)
 library(gapminder)
 library(scales)
 
-# ── Data ──────────────────────────────────────────────────────────────────────
+# Data -----------------------------------------------------------------------
 
 gap_2007 <- gapminder |>
   filter(year == 2007)
 
-# ── Base plot ─────────────────────────────────────────────────────────────────
+# Base plot ------------------------------------------------------------------
 
 p_bubble <- ggplot(
   gap_2007,
@@ -23,23 +23,16 @@ p_bubble <- ggplot(
   labs(
     x = "GDP per capita (USD, log scale)",
     y = "Life expectancy (years)",
+    color = "Continent",
     size = "Population"
   )
 
 p_bubble
 
-# ── Writing a theme function ───────────────────────────────────────────────────
-
-# A theme function lets you reuse your style across every plot and script —
-# like a personal style sheet.
-
-theme_workshop <- function(base_size = 16, ink = "grey20", paper = "white") {
-  # build this together during the demo
-}
-
-p_bubble + theme_workshop()
-
-# ── Apply globally with theme_set() ───────────────────────────────────────────
-
-# (shown after the exercise)
-# theme_set(theme_workshop())
+# Apply a theme ---------------------------------------------------------------
+p_bubble +
+  theme_light(base_size = 18) +
+  theme(
+    legend.text = element_text(size = rel(0.85)),
+    panel.grid.minor = element_blank()
+  )

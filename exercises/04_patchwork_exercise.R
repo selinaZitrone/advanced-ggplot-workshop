@@ -1,5 +1,5 @@
 # Module 4 Exercise: Multipanel layouts with patchwork
-# If you fell behind during the demo, open 04_patchwork_final.R to catch up first.
+# If you fell behind during the demo, open solutions/04_patchwork_final.R to catch up first.
 
 library(ggplot2)
 library(dplyr)
@@ -8,18 +8,11 @@ library(patchwork)
 library(scales)
 library(scico)
 
-# theme_workshop() — from Module 1
-theme_workshop <- function(base_size = 16, ink = "grey20", paper = "white") {
-  theme_light(base_size = base_size, ink = ink, paper = paper) %+replace%
-    theme(
-      legend.text  = element_text(size = rel(0.85)),
-      panel.grid.minor = element_blank()
-    )
-}
+source(here::here("solutions", "theme.R")) # loads theme_workshop()
 
-# ── Data ──────────────────────────────────────────────────────────────────────
+# Data -----------------------------------------------------------------------
 
-# This exercise uses Asian countries — a different subset from the demo.
+# This exercise uses Asian countries, a different subset from the demo.
 
 gap_asia <- gapminder |> filter(continent == "Asia")
 
@@ -33,9 +26,9 @@ gap_asia_summary <- gap_asia |>
 
 gap_asia_2007 <- gap_asia |> filter(year == 2007)
 
-# ── Three starting plots ───────────────────────────────────────────────────────
+# Three starting plots -------------------------------------------------------
 
-# These plots are ready — your job is to compose them.
+# These plots are ready; your job is to compose them.
 
 p_scatter <- ggplot(
   gap_asia_2007,
@@ -73,29 +66,29 @@ p_gdp_asia <- ggplot(
     y = "GDP per capita (USD)"
   )
 
-# ── Task 1: Combine two plots ─────────────────────────────────────────────────
+# Task 1: Combine two plots --------------------------------------------------
 
 # Stack p_scatter and p_life_asia vertically.
 
 
-# ── Task 2: Add the third plot ────────────────────────────────────────────────
+# Task 2: Add the third plot -------------------------------------------------
 
 # Arrange all three plots so the scatter is on the left and the two line charts
 # are stacked on the right. Use () to group panels.
 
 
-# ── Task 3: Apply theme_workshop() with & ─────────────────────────────────────
+# Task 3: Apply theme_workshop() with & --------------------------------------
 
 # Apply theme_workshop() to the whole composition using &.
 # Also move any axis label that is "NULL" to reduce clutter.
 
 
-# ── Task 4: Add panel tags ────────────────────────────────────────────────────
+# Task 4: Add panel tags -----------------------------------------------------
 
 # Add automatic A/B/C panel tags using plot_annotation().
 
 
-# ── Stretch: Inset ────────────────────────────────────────────────────────────
+# Stretch: Inset -------------------------------------------------------------
 
 # Place p_life_asia as a small inset in a corner of p_scatter.
 # Adjust left/bottom/right/top until the positioning looks good.

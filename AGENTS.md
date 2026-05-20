@@ -8,17 +8,29 @@
 - **Repo**: Shared with students ahead of time
 
 ## Repository conventions
-- Each module has a **starting script** (e.g. `01_themes.R`) and a **final script** (e.g. `01_themes_final.R`)
+- Each module has a **starting script** in `R/` (e.g. `R/01_themes.R`) and a **final script** in `solutions/` (e.g. `solutions/01_themes_final.R`)
 - Starting script = what instructor opens at the beginning of the module (scaffolded, no finished code)
 - Final script = fully worked version students can open if they fall behind
 - Add this comment near the top of every starting script:
-  `# If you fall behind, open 01_themes_final.R to catch up`
-- Exercises are R scripts in the repo (e.g. `exercises/01_themes_exercise.R`)
+  `# If you fall behind, open solutions/01_themes_final.R to catch up`
+- Exercises are R scripts in `exercises/` (e.g. `exercises/01_themes_exercise.R`)
+
+### Theme sourcing model
+- `theme_workshop()` lives in **one** place per "track" instead of being copy-pasted:
+  - `solutions/theme.R` — the complete theme; **ships in the repo**, always present
+  - `R/theme.R` — **does not exist in the repo**; the instructor *creates it live* during the Module 1 demo (the "move your theme into its own file" beat)
+- Who sources what:
+  - `R/` working scripts (Modules 2–5) → `source(here::here("R", "theme.R"))` (the file built live; this is the teaching payoff — "now every script reuses your theme")
+  - `solutions/` finals and **all** `exercises/` → `source(here::here("solutions", "theme.R"))` (always present + guaranteed correct, so catch-up and exercises never break on a demo typo)
+- Because Modules 2–5 depend on `R/theme.R`, **creating it in Module 1 is load-bearing** — that demo beat cannot be cut for time. (If trimming Module 1, cut the optional `ink`/`paper` bit instead.)
+- The recurring `p_bubble` is defined inline in each module's scripts (each module is self-contained) rather than imported across modules.
 
 ## Slides
-- Instructor uses Quarto slides (separate repository, not this one)
-- For now: produce **outline / bullet suggestions** for slides; instructor will author them later
-- No need to produce .qmd slide files here
+- Slides live in **this** repo under `slides/` (Quarto revealjs)
+- Plan: a **single `slides/slides.qmd`** for the whole workshop, with `#` headings as per-module section dividers (one drop-in file, since slides later transfer into a separate lecture-series website repo)
+- Plots are **live-rendered** from R chunks (so slides never drift from the demo code); **default revealjs theme**, no custom scss (instructor re-themes on transfer)
+- `workshop_notes.md` (repo root) is the **master narration script** — what the instructor says, step by step, with inline `Slide N:` specs — and is the source of truth for slide content (supersedes the older per-module `slides/*_notes.md`)
+- Built module by module, starting with Module 1; `workshop_notes.md` currently scripts only Intro + Module 1
 
 ## Data
 - All examples use the **gapminder** R package

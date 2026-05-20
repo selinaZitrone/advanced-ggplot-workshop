@@ -1,4 +1,4 @@
-# Module 4: Multipanel layouts with patchwork — FINAL SCRIPT
+# Module 4: Multipanel layouts with patchwork - FINAL SCRIPT
 # This is the fully worked version. Open this if you fell behind during the demo.
 
 library(ggplot2)
@@ -8,16 +8,9 @@ library(patchwork)
 library(scales)
 library(scico)
 
-# theme_workshop() — from Module 1
-theme_workshop <- function(base_size = 16, ink = "grey20", paper = "white") {
-  theme_light(base_size = base_size, ink = ink, paper = paper) %+replace%
-    theme(
-      legend.text = element_text(size = rel(0.85)),
-      panel.grid.minor = element_blank()
-    )
-}
+source(here::here("solutions", "theme.R")) # loads theme_workshop()
 
-# ── Data ──────────────────────────────────────────────────────────────────────
+# Data -----------------------------------------------------------------------
 
 gap_2007 <- gapminder |>
   filter(year == 2007)
@@ -30,9 +23,9 @@ gap_continent <- gapminder |>
     .groups = "drop"
   )
 
-# ── Three named plots ─────────────────────────────────────────────────────────
+# Three named plots ----------------------------------------------------------
 
-# When you plan to compose plots, always assign them to variables first.
+# When you plan to compose plots, assign them to variables first.
 
 p_bubble <- ggplot(
   gap_2007,
@@ -80,26 +73,26 @@ p_gdp <- ggplot(
     color = "Continent"
   )
 
-# ── Combining two plots ───────────────────────────────────────────────────────
+# Combining two plots --------------------------------------------------------
 
 p_bubble + p_life # side by side
 p_bubble / p_life # stacked
 
-# ── Adding a third plot ───────────────────────────────────────────────────────
+# Adding a third plot --------------------------------------------------------
 
-# () groups panels like arithmetic — experiment with the arrangement.
+# () groups panels like arithmetic; experiment with the arrangement.
 p_bubble / (p_gdp + p_life) # bubble on top, two lines below
 (p_bubble + p_life) / p_gdp # lines share a row, GDP anchors below
 
-# ── Collecting shared legends ─────────────────────────────────────────────────
+# Collecting shared legends --------------------------------------------------
 
-# All three plots share the continent color legend — merge into one.
+# All three plots share the continent color legend; merge into one.
 p_bubble /
   (p_gdp + p_life) +
   plot_layout(guides = "collect") &
   theme(legend.position = "bottom")
 
-# ── & vs + : apply shared layers at the composition level ─────────────────────
+# & vs + : apply shared layers at the composition level ----------------------
 
 # Repetition removed: theme_workshop() and scale_color_scico_d() are now
 # applied once to the whole composition instead of inside each plot object.
@@ -152,7 +145,7 @@ p_bubble_bare /
   scale_color_scico_d(palette = "batlow") &
   theme(legend.position = "bottom")
 
-# ── Panel tags ────────────────────────────────────────────────────────────────
+# Panel tags -----------------------------------------------------------------
 
 p_bubble_bare /
   (p_gdp_bare + p_life_bare) +
@@ -162,7 +155,7 @@ p_bubble_bare /
   scale_color_scico_d(palette = "batlow") &
   theme(legend.position = "bottom")
 
-# ── Inset (if time allows) ────────────────────────────────────────────────────
+# Inset (if time allows) -----------------------------------------------------
 
 # Place p_life as a small inset in the bottom-right corner of p_bubble.
 # Coordinates are fractions of the parent panel (0 = left/bottom, 1 = right/top).
@@ -175,7 +168,7 @@ p_bubble +
     top = 0.4
   )
 
-# ── OPTIONAL: map inset (try in advance — requires rnaturalearth) ─────────────
+# OPTIONAL: map inset (try in advance, requires rnaturalearth) ---------------
 
 library(rnaturalearth)
 library(sf)
