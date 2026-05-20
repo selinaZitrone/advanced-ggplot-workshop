@@ -581,9 +581,60 @@ Open `R/04_patchwork.R`.
 
 # Module 5: Exporting figures
 
-## Coming up
+```{r}
+#| label: m5-setup
+#| include: false
+p_bubble_m5 <- p_bubble +
+  scale_color_scico_d(palette = "batlow") +
+  labs(color = "Continent", size = "Population")
+```
 
-*(Slides to be built, see `workshop_notes.md`.)*
+## Same code, different canvas
 
-- `ggsave()` dimensions and dpi
-- `ggview()` preview, `base_size` for print, `ragg` / `cairo_pdf`
+:::: {.columns}
+
+::: {.column width="50%"}
+**Text too small**
+
+```{r}
+#| echo: false
+#| fig-width: 5
+#| fig-height: 3.5
+p_bubble_m5 + theme_workshop(base_size = 6)
+```
+:::
+
+::: {.column width="50%"}
+**Text too big**
+
+```{r}
+#| echo: false
+#| fig-width: 5
+#| fig-height: 3.5
+p_bubble_m5 + theme_workshop(base_size = 28)
+```
+:::
+
+::::
+
+## Rule of thumb
+
+Starting points for Canvas and font sizes:
+
+| Outlet | Canvas width | `base_size` |
+|--------|--------------|-------------|
+| Paper, single column | ~89 mm | 8–10 |
+| Paper, double column | ~120–180 mm | 10–12 |
+| Slide, half | ~150 mm | 14–16 |
+| Slide, full | ~250 mm | 18–22 |
+| Poster | depends on layout | 18–24 |
+
+## Live demo
+
+Open `R/05_export.R`.
+
+## Your turn
+
+### Task (~5 min)
+
+> Open `exercises/05_export_exercise.R`

@@ -409,3 +409,131 @@ p_bubble +
 - Tasks: stack two plots → arrange all three with `()` → apply `theme_workshop()` with `&` → add A/B/C tags via `plot_annotation()`
 - Stretch: try `inset_element()` on a corner of `p_scatter`
 - Catch-up: `solutions/04_patchwork_final.R`
+
+## Module 5: Export
+
+### Slides
+
+- Common experience: plot looks fine in the plot pane, save it, and it's too small, too big, or fuzzy
+
+Slide: same plot side by side, one with tiny text, one with overlapping labels. "Same code, different canvas."
+
+- Define the canvas and then tweak the font size
+- Takes some iteration
+- Sometimes also geoms need to be adjusted
+
+Slide: 3-column table — Outlet | Canvas width | font base_size
+- Paper, single column | ~89 mm | 8–10
+- Paper, double column | ~120–180 mm | 10–12
+- Slide, half | ~150 mm | 14–16
+- Slide, full | ~250 mm | 18–22
+- Poster | depends | 18–24
+
+### Live demo
+
+#### Intro
+
+- same `p_bubble` from before
+
+#### The problem with default `ggsave()`
+
+```r
+ggsave(here("plots", "bubble_default.png"), plot = p_bubble)
+```
+- No dimensions → uses the plot pane size → colleague on a different screen gets a different file.
+- Not reproducible!
+
+- My proposed workflow
+
+#### Step 1: pick a canvas
+
+- Decide what the figure is *for* first and fix the canvas size
+- Copy the comment code block from the solution into the script
+- Example: double-column paper → 180 × 150 mm
+
+#### Step 2: preview with `canvas()`
+
+- `canvas()` from `ggview` shows the plot at the exact export size in the plot pane -> This let's you tweak the dimensions before you save
+
+```r
+p_bubble + canvas(width = 180, height = 150, units = "mm")
+```
+
+- It's actually already fine, maybe the text is a bit large `base_size = 16`
+
+- But if we would go on a half size, this would look drastically different
+
+```r
+p_bubble + canvas(width = 90, height = 70, units = "mm")
+```
+
+#### Step 3: tune `base_size`
+
+- Drop to 14, re-preview
+
+```r
+p_bubble_paper <- p_bubble + theme_workshop(base_size = 14)
+p_bubble_paper + canvas(width = 180, height = 150, units = "mm")
+```
+- Here we can iterate: tune → preview → tune
+- Sometimes also geoms need to be adjusted (point size, line width, etc.). You do this in the same loop using canvas. 
+- But here the geoms are ok
+
+#### Step 4: export with `ragg`
+
+- Now we are ready to save the plot:
+
+```r
+ggsave(
+  here("plots", "bubble_paper.png"),
+  plot = p_bubble_paper,
+  width = 180, height = 110, units = "mm"
+)
+```
+
+- To improve sharpness, we can use a better png device from the `ragg` r package
+- cross-platform, faster, sharper text (anti-aliased). 
+- Always use it for sharp pngs
+- You can also set dpi. 300 is default and a journal standard, but you can make it explicit
+	- Go higher (e.g. 600 ony for line art etc.)
+
+```r
+ggsave(
+  here("plots", "bubble_paper.png"),
+  plot = p_bubble_paper,
+  width = 180, height = 110, units = "mm",
+  dpi = 300,
+  device = ragg::agg_png
+)
+```
+#### Ground-truth check
+
+- Drag `bubble_paper.png` into Word -> it already fits
+- Looks good and is the right size
+
+- We can do the same also for slides, half-slides etc. 
+- We will not do it now, but you can check the solution script later
+
+#### PDF for journals
+
+- For pdf export, same procedure
+- We can safe a pdf in the same way
+- Pdf is vector format, so we don't need dpi
+- `cairo_pdf` which embeds fonts and is robust
+
+```r
+ggsave(
+  here("plots", "bubble_paper.pdf"),
+  plot = p_bubble_paper,
+  width = 180, height = 110, units = "mm",
+  device = cairo_pdf
+)
+```
+
+### Exercise
+
+- Open `exercises/05_export_exercise.R`
+- Asia summary line chart (different subset, single colour — focus stays on sizing)
+- Tasks: 4-step workflow with `canvas()`, `base_size`, `ragg` for an outlet of your joice
+- Stretch: cairo_pdf
+- Catch-up: `solutions/05_export_final.R`

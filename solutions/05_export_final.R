@@ -1,5 +1,4 @@
-# Module 5: Exporting figures - FINAL SCRIPT
-# This is the fully worked version. Open this if you fell behind during the demo.
+# Module 5: Exporting figures in the right format
 
 library(ggplot2)
 library(dplyr)
@@ -10,13 +9,11 @@ library(ragg)
 library(ggview)
 library(here)
 
-source(here::here("solutions", "theme.R")) # loads theme_workshop()
-theme_set(theme_workshop())
+source(here::here("solutions", "theme.R"))
 
-# Create an output directory for saved figures
 dir.create(here("plots"), showWarnings = FALSE)
 
-# The recurring plot ---------------------------------------------------------
+# Create the plot ---------------------------------------------------------
 
 gap_2007 <- gapminder |> filter(year == 2007)
 
@@ -33,99 +30,87 @@ p_bubble <- ggplot(
     y = "Life expectancy (years)",
     color = "Continent",
     size = "Population"
-  )
+  ) +
+  theme_workshop() # base_size = 16 at default
 
 p_bubble
 
 # The problem with default ggsave() ------------------------------------------
 
-# No explicit dimensions: output size depends on the plot pane.
-# Reproducibility breaks: a colleague with a different screen gets a different file.
+# No width/height: ggsave() uses the current plot pane
+# A colleague with a different screen pane gets a different plot size
 ggsave(here("plots", "bubble_default.png"), plot = p_bubble)
 
-# Set dimensions explicitly --------------------------------------------------
+# Step 1: pick a canvas for your outlet --------------------------------------
 
-# Target sizes used in practice:
-#   Paper figure (single column): ~89 mm  (~3.5 in)
-#   Presentation slide:           ~150 mm (~6 in)
-#   Poster panel:                 ~200 mm (~8 in)
+# Typical canvas widths:
+#   Paper, single column:     ~89 mm
+#   Paper, 1.5 / 2 column:    ~120-180 mm
+#   Presentation, half slide: ~150 mm
+#   Presentation, full slide: ~250 mm
+#   Poster panel, depends on the layout
 
+# Step 2: preview the canvas with ggview ------------------------------------
+
+# canvas() shows the plot at the exact export size
+# Iterate here (theme, geoms) until it looks right, and then save the plot
+# E.g. for a 2 column plot in a paper
+p_bubble +
+  canvas(width = 180, height = 150, units = "mm")
+
+# Step 3: tune base_size for the canvas -------------------------------------
+
+# Starting points to iterate from:
+#  Paper (89-180 mm):   base_size 8-11
+# Slide (150-250 mm):  base_size 14-20
+# Poster (~200 mm):    base_size 18-24
+# Geoms (point size, linewidth) also scale with the canvas but here it looks good
+
+p_bubble_paper <- p_bubble + theme_workshop(base_size = 14)
+
+p_bubble_paper +
+  canvas(width = 180, height = 150, units = "mm")
+
+# Step 4: export with ragg --------------------------------------------------
+
+# ragg::agg_png() is cross-platform, faster, and sharper than the default PNG
+# device in ggsave
 ggsave(
   here("plots", "bubble_paper.png"),
-  plot = p_bubble,
-  width = 89,
-  height = 70,
+  plot = p_bubble_paper,
+  width = 180,
+  height = 110,
   units = "mm",
-  dpi = 300
+  dpi = 300,
+  device = ragg::agg_png
 )
+
+# A second canvas: half slide -----------------------------------------------
+
+# Same four steps, different numbers. For a half slide (~150 mm) the
+# default base_size = 16 already looks good
+
+p_bubble +
+  canvas(width = 150, height = 130, units = "mm")
 
 ggsave(
   here("plots", "bubble_slide.png"),
   plot = p_bubble,
   width = 150,
-  height = 110,
+  height = 130,
   units = "mm",
-  dpi = 150
-)
-
-# Preview at export size with ggview() ---------------------------------------
-
-# Before saving, use ggview() to see the plot at the exact output dimensions
-# in the plot pane, no need to save and re-open while iterating on font sizes.
-ggview(p_bubble, width = 89, height = 70, units = "mm")
-ggview(p_bubble, width = 150, height = 110, units = "mm")
-
-# base_size for screen vs. print ---------------------------------------------
-
-# base_size = 16 was chosen for screenshare readability.
-# At 89 mm / 300 dpi the text is too large, drop to 11 or 12 for print.
-
-p_bubble_print <- p_bubble + theme_workshop(base_size = 11)
-
-ggsave(
-  here("plots", "bubble_paper_sized.png"),
-  plot = p_bubble_print,
-  width = 89,
-  height = 70,
-  units = "mm",
-  dpi = 300
-)
-
-# Open bubble_paper.png and bubble_paper_sized.png side by side to compare.
-
-# Render with ragg -----------------------------------------------------------
-
-# ragg::agg_png() is cross-platform, faster, and produces sharper text than
-# the default PNG renderer. Pass it via the device argument.
-ggsave(
-  here("plots", "bubble_ragg.png"),
-  plot = p_bubble_print,
-  device = ragg::agg_png,
-  width = 89,
-  height = 70,
-  units = "mm",
-  dpi = 300
+  dpi = 300,
+  device = ragg::agg_png
 )
 
 # PDF with embedded fonts ----------------------------------------------------
 
-# cairo_pdf embeds fonts, required for most journal submissions.
-# The default pdf() subsets fonts but does not always embed them fully.
+# cairo_pdf embeds fonts in the file and is a robust default
 ggsave(
-  here("plots", "bubble_print.pdf"),
-  plot = p_bubble_print,
-  device = cairo_pdf,
-  width = 89,
-  height = 70,
-  units = "mm"
+  here("plots", "bubble_paper.pdf"),
+  plot = p_bubble_paper,
+  width = 180,
+  height = 110,
+  units = "mm",
+  device = cairo_pdf
 )
-
-# showtext (brief mention) ---------------------------------------------------
-
-# To use Google Fonts or custom system fonts, load them with the showtext package
-# before rendering. Add a base_family argument to theme_workshop() to wire it in.
-#
-# library(showtext)
-# font_add_google("Lato", "lato")
-# showtext_auto()
-# theme_workshop(base_family = "lato")

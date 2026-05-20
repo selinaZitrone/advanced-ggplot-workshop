@@ -4,26 +4,20 @@
 library(ggplot2)
 library(dplyr)
 library(gapminder)
-library(scales)
-library(scico)
 library(ragg)
 library(ggview)
 library(here)
 
-source(here::here("solutions", "theme.R")) # loads theme_workshop()
+source(here::here("solutions", "theme.R"))
 
 dir.create(here("plots"), showWarnings = FALSE)
 
-# Starting plot: Asian countries over time -----------------------------------
+# Starting plot: mean life expectancy in Asia --------------------------------
 
 gap_asia <- gapminder |>
   filter(continent == "Asia") |>
   group_by(year) |>
-  summarise(
-    mean_lifeExp = mean(lifeExp),
-    mean_gdpPercap = mean(gdpPercap),
-    .groups = "drop"
-  )
+  summarise(mean_lifeExp = mean(lifeExp), .groups = "drop")
 
 p_asia <- ggplot(gap_asia, aes(x = year, y = mean_lifeExp)) +
   geom_line(linewidth = 1, color = "#0072B2") +
@@ -36,29 +30,17 @@ p_asia <- ggplot(gap_asia, aes(x = year, y = mean_lifeExp)) +
 
 p_asia
 
-# Task 1: Default vs. explicit dimensions ------------------------------------
+# Task 1 ------------------------------------------------------------------
 
-# Export p_asia twice:
-#   (a) with default ggsave(), no width/height/dpi
-#   (b) at presentation slide size (150 mm wide, 100 mm tall, 150 dpi)
-# Open both files. What's different?
+# Pick an outlet of your choise and run the 4 steps to export the plot in the
+# right format:
+# 1. Pick canvas dimensions for the outlet
+# 2. Preview using ggview::canvas()
+# 3. Tune base_size (and other theme elements) until it looks right
+# 4. Export with ggsave() using the ragg png device
 
-# Task 1b: Preview with ggview() ---------------------------------------------
+# Task 2 (If you have time) -------------------------------------------------
+# Re-export the same plot as a PDF using cairo_pdf
 
-# Before saving the slide-sized version, preview it with ggview() at those
-# exact dimensions so you can check font sizes without opening the file.
-
-# Task 2: Adjust base_size for print -----------------------------------------
-
-# Export p_asia at single-column paper size (89 mm wide, 65 mm tall, 300 dpi).
-# Before saving, recreate p_asia with a base_size appropriate for print (11 or 12).
-
-# Task 3: Use ragg -----------------------------------------------------------
-
-# Re-export the print version using device = ragg::agg_png.
-# Compare the output to Task 2, zoom in on the axis labels.
-
-# Stretch: PDF ---------------------------------------------------------------
-
-# Export p_asia (print size) as a PDF using device = cairo_pdf.
-# (No dpi needed for vector formats, remove that argument.)
+# Task 3 (If you have time) -------------------------------------------------
+# Export a plot for a different outlet (e.g. presentation, poster)
