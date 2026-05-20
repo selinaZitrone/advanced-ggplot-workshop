@@ -1,11 +1,30 @@
 # Advanced ggplot2 workshop
 
-Materials for a 2-hour hands-on workshop on publication-ready figures with ggplot2.
+A 2-hour hands-on workshop on publication-ready figures with ggplot2.  
+**Audience:** R users who know the basics — geoms, aesthetics, `labs()`, simple `theme()` tweaks.
 
-To install the packages used in the workshop:
+## Setup
+
+Install the required packages by running this once before the workshop:
 
 ```r
 source("install_packages.R")
 ```
 
-One of the packages (`colorblindr`) is installed from GitHub. On Windows this may require [Rtools](https://cran.r-project.org/bin/windows/Rtools/). Allow 5–10 minutes on a fresh setup.
+> **Windows users:** The script uses `pak`, which will be installed automatically if needed. No Rtools required for the essential packages.
+
+## Modules
+
+| # | Topic | Demo script | Final script | Exercise |
+|---|-------|-------------|--------------|---------|
+| 1 | Custom themes | `R/01_themes.R` | `R/01_themes_final.R` | `exercises/01_themes_exercise.R` |
+| 2 | Color with intent | `R/02_color.R` | `R/02_color_final.R` | `exercises/02_color_exercise.R` |
+| 3 | Directing attention | `R/03_attention.R` | `R/03_attention_final.R` | `exercises/03_attention_exercise.R` |
+| 4 | Multipanel layouts | `R/04_patchwork.R` | `R/04_patchwork_final.R` | `exercises/04_patchwork_exercise.R` |
+| 5 | Exporting figures | `R/05_export.R` | `R/05_export_final.R` | `exercises/05_export_exercise.R` |
+
+## How to follow along
+
+- Open the **demo script** at the start of each module and code along with the instructor.
+- If you fall behind, open the **final script** to catch up before the exercise.
+- At the end of each module, work through the **exercise script** on your own.
