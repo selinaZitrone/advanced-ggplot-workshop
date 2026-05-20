@@ -7,7 +7,6 @@ library(gapminder)
 library(scales)
 library(colorBlindness)
 library(scico)
-# cols4all: install with pak::pak("mtennekes/cols4all") then library(cols4all)
 
 source(here::here("solutions", "theme.R")) # loads theme_workshop()
 theme_set(theme_workshop())
@@ -32,7 +31,8 @@ p_bubble <- ggplot(
 
 # The default ggplot2 palette is not colorblind-safe.
 # cvdPlot() simulates how the plot looks with color vision deficiency.
-cvdPlot(p_bubble)
+# Shrinking `text` via the inheritance tree keeps the 4-panel output readable.
+cvdPlot(p_bubble + theme(text = element_text(size = 8)))
 
 # Okabe-Ito from base R ------------------------------------------------------
 
@@ -57,7 +57,7 @@ p_okabe
 # Check colorblindness -------------------------------------------------------
 
 # Okabe-Ito stays distinguishable under all common CVD types.
-cvdPlot(p_okabe)
+cvdPlot(p_okabe + theme(text = element_text(size = 8)))
 
 # Other safe palette sources -------------------------------------------------
 
@@ -68,10 +68,3 @@ p_bubble + scale_colour_viridis_d()
 # scico: perceptually uniform palettes for scientific use, all CVD-safe.
 p_bubble + scale_colour_scico_d(palette = "batlow")
 p_bubble + scale_colour_scico_d(palette = "roma")
-
-# cols4all: palette browser --------------------------------------------------
-
-# Interactive palette browser with built-in CVD simulation.
-# Install once: pak::pak("mtennekes/cols4all")
-# library(cols4all)
-# c4a_gui()

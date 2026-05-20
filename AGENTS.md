@@ -36,7 +36,6 @@
 - **Slides built so far:** Intro, Module 1 (Themes), and Module 2 (Colour) are fully built in `slides/slides.qmd`. Modules 3–5 are `#` section-divider stubs ("coming up"). Deck renders with `quarto render slides/slides.qmd` (needs the workshop R packages; `slides/slides.html` is gitignored).
 - **Per-module workflow:** (1) instructor scripts the module in `workshop_notes.md`, (2) review/agree on content & length, (3) build the slides and adjust the demo/exercise scripts. Resolve `DISCUSS:` tokens in `workshop_notes.md` directly when there's a clear best answer; otherwise raise them.
 - **Open review items to raise at the relevant module:**
-  - *Module 2:* `colorBlindness` is "optional" in `install_packages.R` but `cvdPlot()` is the demo's opening hook — decide essential vs. instructor-only.
   - *Modules 2 → 4/5:* colour thread — Module 2 builds the named Okabe `continent_colors`, but Modules 4–5 colour continents with scico `batlow`; decide whether to carry the named vector through.
   - *Module 4:* the map-inset block in `solutions/04_patchwork_final.R` runs `library(rnaturalearth)`/`sf` live (errors without those optional packages) and names a variable `gap_europe` while filtering `continent == "Africa"` — clean up when building Module 4.
   - *General:* `theme_workshop()`'s default signature passes `ink`/`paper`, which require ggplot2 ≥ 4.0 — make sure the install refreshes ggplot2.
@@ -133,9 +132,8 @@ Double-encoding concept mentioned on slides only (works better on line/bar chart
 4. Slide: named vector rationale (position-based vs. name-based, filtering problem)
 5. Live code: `palette.colors()`, build named vector, apply, consistency demo, `cvdPlot()`
 6. Live code: viridis, scico
-7. Demo: `cols4all::c4a_gui()`
 
-**Packages:** `colorBlindness`, `scico`, `cols4all` (GitHub: mtennekes/cols4all)
+**Packages:** `colorBlindness`, `scico`
 
 ### Module 3 — Directing attention (22 min) ✅ COMPLETE
 **Scripts:** `R/03_attention.R`, `R/03_attention_final.R`, `exercises/03_attention_exercise.R`
@@ -206,7 +204,7 @@ TODO: Run `03_attention_final.R` end-to-end to verify annotation position looks 
 
 ## Packages used across workshop
 - ggplot2, dplyr, gapminder, scales
-- colorBlindness, scico, cols4all (GitHub)
+- colorBlindness, scico
 - gghighlight, ggrepel, ggtext
 - patchwork
 - ragg, ggview

@@ -182,30 +182,28 @@ theme_set(theme_workshop())
 
 ## Module 2: Color with intent
 
-### Intro 
+### Pick intuitive colors
+
+- This one is easy to explain.
+- Use colors your reader already associates with the thing (warm = hot, blue = water)
+- Reference: Blogpost on colors by Lisa Charlotte Muth (Datawrapper)
+
+### Two things that matter
+
+- For scientific figures 2 things are very important to think about
+	- Pick intuitive colors
+	- Pick colorblind friendly colors (about 1 in 12 men has a colour vision deficiency)
+
+### Three palette types
 
 - Colors is a huge topic and there are an infinite amount of palettes out there to choose from
 - In general: 3 palette types: qualitative/sequential/diverging
 	- Qualitative: Discrete different data (e.g. continents)
-	- Sequential: Data that follows a logical order (e.g. ascending number)
+	- Sequential: Data that follows a logical order (e.g. ascending number) — note both strips on the slide: same palette used continuously *and* as discrete bins
 	- Diverging: E.g. Values Above and below 0
-		- Decided: show the three types as simple colour-swatch strips (no gapminder plots, no map). Tie each to a gapminder example verbally: qualitative = continents, sequential = life expectancy, diverging = above/below average.
+- Tie each to a gapminder example verbally: qualitative = continents, sequential = life expectancy, diverging = above/below average.
 
-Slide 1: 3 columns with headers for the 3 palette types and a colour-swatch strip below each, plus a short bullet on when to choose which. (Swatches are generated in slides.qmd, no screenshots needed.)
-
-- For scientific figures 2 things are very important to think about
-	- Pick intuitive colors
-	- Pick colorblind friendly colors
-
-### Pick intuitive colors
-
-- This one is easy to explain.
-
-Slide: ![[Blogpost on colors](https://www.datawrapper.de/blog/colors) by Lisa Charlotte Muth (Datawrapper)](images/2025_04_17_data-visualisation/intuitive_colors.png)
-
-![[Lecture  - Advanced ggplot workshop-1.png]]
-  
-### Use colorblind friendly colors
+### Colorblind friendly options
 
 - R's default colors are not color-blind friendly
 - Colorblind friendly options I recomend for R packages are
@@ -213,13 +211,9 @@ Slide: ![[Blogpost on colors](https://www.datawrapper.de/blog/colors) by Lisa Ch
 - Okabe-Ito palette
 	- Say: designed by Okabe & Ito to stay distinguishable under all common colour-blindness types; 8 hues plus black and grey; built into base R via palette.colors(); a solid default for categorical data. We skip the yellow (low contrast on white).
 
-Slide: Show Okabe Ito colors and link to the source. Bullet point to say integrated in base R
-
 - Viridis color palette
 	- Included in ggplot, good for sequential data
 	- Say: perceptually uniform, colourblind- and greyscale-safe; built into ggplot2 (scale_*_viridis_c / _d); best for ordered or continuous data; options A-H (viridis, magma, plasma, cividis, ...).
-
-Slide: Link to viridis do on ggplot page, show the different viridis color options (just the colors, not in a plot)
 
 - Scico package
 	-  Designed for representing scientific data in way that is
@@ -227,24 +221,20 @@ Slide: Link to viridis do on ggplot page, show the different viridis color optio
 	- universally readable
 	- citable
 
-Slide: Show scico colors (rendered as swatches in R, no screenshot needed), 2 bullte points why they are cool, link to scico package and link to the original source of the colors used in scico: https://www.fabiocrameri.ch/colourmaps/
-
-Slide (just as reference): Shows how to install, load and use colorBlindness package and cvdPlot function on p_bubble
-
-Slides (just as reference): Install, load and use cols4All with link to the package
 ### Live demo
 
 - Load packages and explain what they do
-- Show p-bubble
-- How does this look like for colorblind readers?
+- Show p_bubble
+- The slides said about 1 in 12 men can't read default ggplot colours — let's see what that actually looks like for our plot
 - Simulate common types of color blindness
+- Tip: shrink the text via the `text` parent so the 4-panel output stays readable (callback to Module 1's inheritance tree — one change cascades to axis, legend title, legend labels)
 ```r
-cvdPlot(p_bubble)
+cvdPlot(p_bubble + theme(text = element_text(size = 8)))
 ```
 
-- How can we do better?
+- That's the proof. How can we do better?
 #### Choose manual colors: Okabe-Ito
-- One famouscolorblind-safe qualitative palette is the Okabe-Ito palette
+- One famous colorblind-safe qualitative palette is the Okabe-Ito palette
 - It comes with R
 - Access the color values like this:
 ```r
@@ -309,16 +299,10 @@ p_bubble + scale_colour_scico_d(palette = "batlow")
 ```r
 scico_palette_names(categorical = TRUE)
 ```
-#### Fancy tool cols4all (optional if time)
+### cvdPlot reference
 
-- Tool to browse all palettes and filter them by suitability
-- Needs to install from Github -> Windows users need RTools installed
-	- Try it out in the exercise.
-	- If you can't install the package -> Install RTools first (after the workshop)
-```r
-library(cols4all)
-c4a_gui()
-```
+- Brief reference slide — same `cvdPlot()` from the opening reveal
+- Here so students have the code visible to use on their own plots
 
 ### Exercise
 
@@ -327,3 +311,85 @@ c4a_gui()
 	- Check available options for scico with
 `scico_palette_names(categorical = TRUE)`
 - Use cvdPlot to inspect the colors
+
+## Module 4: patchwork
+
+- In scientific works it's very common to have nested and combined plots like these
+
+Slide 1: Show a plot that is built of 3 subplots. Use the example from the live demo with a nice color scale from scico.
+Slide 2: Show a plot with an inset. Use the example from the live demo.
+
+- In the ggplot2 universe, there is a really cool package that does this 
+- Called patchwork
+
+Slide: Just a header and a link to the patchwork doc
+
+### Live demo
+
+#### Intro
+
+- Here we have 3 separate plots from the same data
+- Show the plots
+#### Combine plots
+
+- As soon as you loaded the patchwork package you can use `+`,  `/` and `|` to combine plots
+	- DISCUSS: What is the difference between `/` and `|`
+- Show:
+```r
+p_bubble + p_life # side by side
+p_life / p_gdp # stacked
+```
+- You can also create more fancy designs using brackets to group plots
+```r
+p_bubble / (p_gdp + p_life)
+```
+
+#### Apply layout
+
+- You can add new layers on the combined plot level with `+`, just like you do in a ggplot
+- You can add a plot layout layer where you can: collect common axes and legends
+```r
+p_life / p_gdp +
+  plot_layout(guides = "collect", axes = "collect", axis_titles = "collect")
+```
+
+#### Add annotation
+
+- You can also annotate the plot, e.g. adding letters to indicate panels:
+```r
+p_life / p_gdp +
+  plot_layout(guides = "collect", axes = "collect", axis_titles = "collect") +
+  plot_annotation(tag_levels = "A", tag_suffix = ")")
+```
+
+#### Add new layers to the plot
+
+- You can also apply ggplot layers at the individual plot layer. 
+- For this you need to use `&` rather than `+`
+
+```r
+p_life_bare /
+  p_gdp_bare +
+  plot_layout(guides = "collect", axes = "collect", axis_titles = "collect") +
+  plot_annotation(tag_levels = "A", tag_suffix = ")") &
+  geom_line(linewidth = 1) &
+  scale_color_scico_d(palette = "batlow") &
+  theme_workshop()
+```
+
+#### Insets (if time allows)
+
+- You can also inset elements into each other
+```r
+p_bubble +
+  inset_element(
+    p_life + theme(legend.position = "none"),
+    left = 0.6,
+    bottom = 0.01,
+    right = 0.99,
+    top = 0.4
+  )
+```
+
+### Exercise
+- DISCUSS what could be a good and straight forward exercise

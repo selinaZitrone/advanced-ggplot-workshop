@@ -272,21 +272,66 @@ swatch_ramp <- function(cols) {
   ggplot(data.frame(x = seq_along(cols)), aes(x, 1, fill = x)) +
     geom_raster() +
     scale_fill_gradientn(colours = cols, guide = "none") +
-    theme_void()
+    coord_cartesian(expand = FALSE) +
+    theme_void() +
+    theme(plot.margin = margin(2, 4, 2, 4))
 }
 
-# stacked, titled ramps
-ramp_panel <- function(named_cols) {
+# titled ramps in a grid (ncol controls layout)
+ramp_panel <- function(named_cols, ncol = 1) {
   strips <- lapply(names(named_cols), function(nm) {
     swatch_ramp(named_cols[[nm]]) +
       labs(title = nm) +
       theme(plot.title = element_text(size = 12, hjust = 0))
   })
-  patchwork::wrap_plots(strips, ncol = 1)
+  patchwork::wrap_plots(strips, ncol = ncol)
 }
 ```
 
-## Three kinds of palette
+## Pick intuitive colours
+
+Use colours your reader already associates with the thing.
+
+![[Blogpost on colours by Lisa Charlotte Muth (Datawrapper)](https://www.datawrapper.de/blog/colors)](intuitive_colors.png)
+
+
+## Two things that matter
+
+For scientific figures:
+
+1. **Intuitive** colours that match what your reader expects
+2. **Colourblind-safe** colours (about 1 in 12 men has a colour vision deficiency)
+
+```{r}
+#| echo: false
+#| fig-width: 8
+#| fig-height: 2.4
+#| fig-align: center
+set.seed(42)
+cb_demo <- data.frame(
+  x = runif(20, 0, 10),
+  y = runif(20, 0, 5),
+  group = rep(c("A", "B"), each = 10)
+)
+rg_cols <- c(A = "red", B = "forestgreen")
+rg_deutan <- colorspace::deutan(rg_cols)
+names(rg_deutan) <- names(rg_cols)
+
+p_normal <- ggplot(cb_demo, aes(x, y, color = group)) +
+  geom_point(size = 7, alpha = 0.9) +
+  scale_color_manual(values = rg_cols, guide = "none") +
+  labs(title = "Normal vision") +
+  theme_void() +
+  theme(plot.title = element_text(size = 13, hjust = 0.5))
+
+p_deutan <- p_normal +
+  scale_color_manual(values = rg_deutan, guide = "none") +
+  labs(title = "Deuteranopia")
+
+p_normal + p_deutan
+```
+
+## Three kinds of palettes
 
 :::: {.columns}
 
@@ -300,7 +345,7 @@ ramp_panel <- function(named_cols) {
 swatch_discrete(continent_colors)
 ```
 
-Distinct categories (e.g. continents)
+Distinct categories
 :::
 
 ::: {.column width="33%"}
@@ -313,7 +358,14 @@ Distinct categories (e.g. continents)
 swatch_ramp(viridisLite::viridis(256))
 ```
 
-Ordered, low to high (e.g. life expectancy)
+```{r}
+#| echo: false
+#| fig-width: 3.2
+#| fig-height: 0.7
+swatch_discrete(viridisLite::viridis(7))
+```
+
+Ordered, low to high
 :::
 
 ::: {.column width="33%"}
@@ -331,26 +383,6 @@ Above / below a midpoint
 
 ::::
 
-## Two things that matter
-
-For scientific figures:
-
-1. **Intuitive** colours that match what your reader expects
-2. **Colourblind-safe** colours (about 1 in 12 men has a colour vision deficiency)
-
-## Pick intuitive colours
-
-```{r}
-#| echo: false
-#| out-width: 65%
-#| fig-align: center
-knitr::include_graphics("intuitive_colors.png")
-```
-
-Use colours your reader already associates with the thing (warm = hot, blue = water).
-
-[Blogpost on colours by Lisa Charlotte Muth (Datawrapper)](https://www.datawrapper.de/blog/colors)
-
 ## Okabe-Ito (base R)
 
 A colourblind-safe qualitative palette, built into base R.
@@ -363,10 +395,10 @@ swatch_discrete(okabe)
 ```
 
 - 8 distinct hues plus black and grey, separable under all common CVD types
-- `palette.colors(palette = "Okabe-Ito")` (no package needed)
-- We skip the yellow: low contrast on white
+- access with `palette.colors(palette = "Okabe-Ito")`
 
-[Source: Okabe & Ito](https://jfly.uni-koeln.de/color/)
+
+[See here for details](https://clauswilke.com/dataviz/color-pitfalls.html#fig:palette-Okabe-Ito)
 
 ## viridis (built into ggplot2)
 
@@ -374,61 +406,64 @@ Perceptually uniform, colourblind- and greyscale-safe. Best for ordered or conti
 
 ```{r}
 #| echo: false
-#| fig-width: 9
-#| fig-height: 2.6
+#| fig-width: 10
+#| fig-height: 3.4
 ramp_panel(list(
-  viridis = viridisLite::viridis(256, option = "D"),
   magma   = viridisLite::viridis(256, option = "A"),
+  inferno = viridisLite::viridis(256, option = "B"),
   plasma  = viridisLite::viridis(256, option = "C"),
-  cividis = viridisLite::viridis(256, option = "E")
-))
+  viridis = viridisLite::viridis(256, option = "D"),
+  cividis = viridisLite::viridis(256, option = "E"),
+  rocket  = viridisLite::viridis(256, option = "F"),
+  mako    = viridisLite::viridis(256, option = "G"),
+  turbo   = viridisLite::viridis(256, option = "H")
+), ncol = 2)
 ```
 
-`scale_colour_viridis_d()` / `_c()` · [docs](https://ggplot2.tidyverse.org/reference/scale_viridis.html)
+- access with `scale_colour_viridis_d()` / `_c()` 
 
-## scico (scientific colour maps)
+[See here for details](https://ggplot2.tidyverse.org/reference/scale_viridis.html)
+
+## scico R package
+
+Perceptually uniform and colourblind-safe. Made for **scientific data** and designed to be fair, readable, and citable
+
 
 ```{r}
 #| echo: false
-#| fig-width: 9
-#| fig-height: 2.6
+#| fig-width: 10
+#| fig-height: 3.4
 ramp_panel(list(
-  batlow = scico::scico(256, palette = "batlow"),
-  roma   = scico::scico(256, palette = "roma"),
-  vik    = scico::scico(256, palette = "vik"),
-  lajolla = scico::scico(256, palette = "lajolla")
-))
+  batlow  = scico::scico(256, palette = "batlow"),
+  lajolla = scico::scico(256, palette = "lajolla"),
+  bilbao  = scico::scico(256, palette = "bilbao"),
+  oslo    = scico::scico(256, palette = "oslo"),
+  vik     = scico::scico(256, palette = "vik"),
+  roma    = scico::scico(256, palette = "roma"),
+  berlin  = scico::scico(256, palette = "berlin"),
+  broc    = scico::scico(256, palette = "broc")
+), ncol = 2)
 ```
 
-- Perceptually uniform and colourblind-safe
-- Made for science: fair, readable, **citable**
+- access with `scale_colour_scico_d()` / `_c()`
 
-[scico package](https://github.com/thomasp85/scico) · [colour maps by Fabio Crameri](https://www.fabiocrameri.ch/colourmaps/)
+[scico R package](https://github.com/thomasp85/scico) · [colour maps by Fabio Crameri](https://www.fabiocrameri.ch/colourmaps/)
 
-## Check it: `cvdPlot()` {.smaller}
+## Check it: `cvdPlot()`
 
-*Reference slide*
+Simulates how your figure looks under common types of colour vision deficiency.
 
-```r
+```{r}
+#| output-location: slide
 library(colorBlindness)
-cvdPlot(p_okabe)
+# Shrink text via the `text` parent — the inheritance tree from Module 1
+# cascades the change to axis text, legend title, and legend labels, so
+# the 4-panel cvdPlot output stays readable.
+cvdPlot(p_bubble + theme(text = element_text(size = 8)))
 ```
 
-Simulates how your figure looks under common types of colour vision deficiency (deuteranopia, protanopia, desaturated).
+see next slide for the result
 
-## Browse palettes: `cols4all` {.smaller}
-
-*Reference slide*
-
-```r
-# install.packages("pak"); pak::pak("mtennekes/cols4all")
-library(cols4all)
-c4a_gui()
-```
-
-Interactive palette browser with built-in CVD simulation. (Windows: needs RTools to install from GitHub.)
-
-[cols4all](https://github.com/mtennekes/cols4all)
 
 ## Live demo
 
@@ -439,6 +474,7 @@ Open `R/02_color.R`.
 3. A **named** colour vector for consistent continents
 4. viridis and scico scale functions
 
+
 ## Your turn
 
 ### Task (~5 min)
@@ -447,7 +483,7 @@ Open `R/02_color.R`.
 
 - Apply a colourblind-safe palette (viridis or scico) to the line chart
 - Check it with `cvdPlot()`
-- **Stretch:** build a named vector so each continent keeps its colour
+- **If time:** build a named vector so each continent keeps its colour
 
 Stuck? See `solutions/02_color_final.R`.
 

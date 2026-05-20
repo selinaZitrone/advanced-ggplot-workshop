@@ -8,7 +8,7 @@ if (!requireNamespace("pak", quietly = TRUE)) install.packages("pak")
 
 pak::pak(c(
   "ggplot2", "dplyr", "gapminder", "scales", "here",  # core
-  "scico",                                             # Module 2 (color)
+  "colorBlindness", "scico",                          # Module 2 (color)
   "gghighlight", "ggrepel", "ggtext",                  # Module 3 (attention)
   "patchwork",                                         # Module 4 (multipanel)
   "ragg", "ggview"                                     # Module 5 (export)
@@ -16,14 +16,10 @@ pak::pak(c(
 
 # Optional: used in demos but not required to follow along -------------------
 
-# colorBlindness     CVD simulation in Module 2 (requires Rtools on Windows)
-# cols4all           interactive palette browser in Module 2 (GitHub)
 # rnaturalearth + sf map inset demo at end of Module 4 (GitHub)
 # showtext           custom/Google fonts, briefly mentioned in Module 5
 
 # pak::pak(c(
-#   "colorBlindness",
-#   "mtennekes/cols4all",
 #   "ropensci/rnaturalearth", "sf",
 #   "showtext"
 # ))

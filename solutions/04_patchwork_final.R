@@ -53,7 +53,6 @@ p_life <- ggplot(
   theme_workshop() +
   labs(
     title = "Life expectancy over time",
-    x = NULL,
     y = "Life expectancy (years)",
     color = "Continent"
   )
@@ -68,7 +67,6 @@ p_gdp <- ggplot(
   theme_workshop() +
   labs(
     title = "GDP per capita over time",
-    x = NULL,
     y = "GDP per capita (USD)",
     color = "Continent"
   )
@@ -76,7 +74,7 @@ p_gdp <- ggplot(
 # Combining two plots --------------------------------------------------------
 
 p_bubble + p_life # side by side
-p_bubble / p_life # stacked
+p_life / p_gdp # stacked
 
 # Adding a third plot --------------------------------------------------------
 
@@ -87,40 +85,26 @@ p_bubble / (p_gdp + p_life) # bubble on top, two lines below
 # Collecting shared legends --------------------------------------------------
 
 # All three plots share the continent color legend; merge into one.
-p_bubble /
-  (p_gdp + p_life) +
-  plot_layout(guides = "collect") &
-  theme(legend.position = "bottom")
+p_life /
+  p_gdp +
+  plot_layout(guides = "collect", axes = "collect", axis_titles = "collect")
 
-# & vs + : apply shared layers at the composition level ----------------------
+# Add plot annotation --------------------------------------------------------
+p_life /
+  p_gdp +
+  plot_layout(guides = "collect", axes = "collect", axis_titles = "collect") +
+  plot_annotation(tag_levels = "A", tag_suffix = ")") # adds tags "A", "B", etc. to each panel
 
-# Repetition removed: theme_workshop() and scale_color_scico_d() are now
-# applied once to the whole composition instead of inside each plot object.
-
-p_bubble_bare <- ggplot(
-  gap_2007,
-  aes(x = gdpPercap, y = lifeExp, color = continent, size = pop)
-) +
-  geom_point(alpha = 0.7) +
-  scale_x_log10(labels = label_dollar(accuracy = 1)) +
-  scale_size(labels = label_number(scale_cut = cut_short_scale())) +
-  labs(
-    title = "2007 snapshot",
-    x = "GDP per capita (USD, log scale)",
-    y = "Life expectancy (years)",
-    color = "Continent",
-    size = "Population"
-  )
+# Add individual plot level layers -------------------------------------------
 
 p_life_bare <- ggplot(
   gap_continent,
   aes(x = year, y = mean_lifeExp, color = continent)
 ) +
-  geom_line(linewidth = 1) +
   labs(
     title = "Life expectancy over time",
-    x = NULL,
     y = "Life expectancy (years)",
+    x = "Year",
     color = "Continent"
   )
 
@@ -128,32 +112,23 @@ p_gdp_bare <- ggplot(
   gap_continent,
   aes(x = year, y = mean_gdpPercap, color = continent)
 ) +
-  geom_line(linewidth = 1) +
   scale_y_continuous(labels = label_dollar(accuracy = 1)) +
   labs(
     title = "GDP per capita over time",
-    x = NULL,
+    x = "Year",
     y = "GDP per capita (USD)",
     color = "Continent"
   )
 
 # & applies to every panel in the composition
-p_bubble_bare /
-  (p_gdp_bare + p_life_bare) +
-  plot_layout(guides = "collect") &
-  theme_workshop() &
+p_life_bare /
+  p_gdp_bare +
+  plot_layout(guides = "collect", axes = "collect", axis_titles = "collect") +
+  plot_annotation(tag_levels = "A", tag_suffix = ")") &
+  geom_line(linewidth = 1) &
   scale_color_scico_d(palette = "batlow") &
-  theme(legend.position = "bottom")
+  theme_workshop()
 
-# Panel tags -----------------------------------------------------------------
-
-p_bubble_bare /
-  (p_gdp_bare + p_life_bare) +
-  plot_layout(guides = "collect") +
-  plot_annotation(tag_levels = "A") &
-  theme_workshop() &
-  scale_color_scico_d(palette = "batlow") &
-  theme(legend.position = "bottom")
 
 # Inset (if time allows) -----------------------------------------------------
 
@@ -168,7 +143,8 @@ p_bubble +
     top = 0.4
   )
 
-# OPTIONAL: map inset (try in advance, requires rnaturalearth) ---------------
+# OPTIONAL: map inset --------------------------------------------------------
+# This is a common inset you often see
 
 library(rnaturalearth)
 library(sf)

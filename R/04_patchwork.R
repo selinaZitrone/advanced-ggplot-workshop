@@ -73,10 +73,14 @@ p_gdp <- ggplot(
     color = "Continent"
   )
 
+# The three plots
+p_bubble
+p_life
+p_gdp
+
 # Combining two plots --------------------------------------------------------
 
 # + places plots side by side; / stacks them.
-
 
 # Adding a third plot --------------------------------------------------------
 
@@ -85,12 +89,10 @@ p_gdp <- ggplot(
 #   p_bubble / (p_gdp + p_life)   bubble on top, two lines below
 #   (p_bubble + p_life) / p_gdp   different emphasis
 
-
 # Collecting shared legends --------------------------------------------------
 
 # All three plots share a continent color legend, no need to repeat it.
 # plot_layout(guides = "collect") merges identical legends into one.
-
 
 # & vs + ---------------------------------------------------------------------
 
@@ -101,11 +103,9 @@ p_gdp <- ggplot(
 # Step 1: remove theme_workshop() and scale_color_scico_d() from individual plots
 # Step 2: apply them once with &
 
-
 # Panel tags -----------------------------------------------------------------
 
 # plot_annotation(tag_levels = "A") labels panels automatically.
-
 
 # Inset (if time allows) -----------------------------------------------------
 
