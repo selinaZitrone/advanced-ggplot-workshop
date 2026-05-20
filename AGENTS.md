@@ -30,7 +30,17 @@
 - Plan: a **single `slides/slides.qmd`** for the whole workshop, with `#` headings as per-module section dividers (one drop-in file, since slides later transfer into a separate lecture-series website repo)
 - Plots are **live-rendered** from R chunks (so slides never drift from the demo code); **default revealjs theme**, no custom scss (instructor re-themes on transfer)
 - `workshop_notes.md` (repo root) is the **master narration script** — what the instructor says, step by step, with inline `Slide N:` specs — and is the source of truth for slide content (supersedes the older per-module `slides/*_notes.md`)
-- Built module by module, starting with Module 1; `workshop_notes.md` currently scripts only Intro + Module 1
+- Built module by module; `workshop_notes.md` currently scripts Intro + Modules 1–2
+
+## Build progress & open items (handoff)
+- **Slides built so far:** Intro, Module 1 (Themes), and Module 2 (Colour) are fully built in `slides/slides.qmd`. Modules 3–5 are `#` section-divider stubs ("coming up"). Deck renders with `quarto render slides/slides.qmd` (needs the workshop R packages; `slides/slides.html` is gitignored).
+- **Per-module workflow:** (1) instructor scripts the module in `workshop_notes.md`, (2) review/agree on content & length, (3) build the slides and adjust the demo/exercise scripts. Resolve `DISCUSS:` tokens in `workshop_notes.md` directly when there's a clear best answer; otherwise raise them.
+- **Open review items to raise at the relevant module:**
+  - *Module 2:* `colorBlindness` is "optional" in `install_packages.R` but `cvdPlot()` is the demo's opening hook — decide essential vs. instructor-only.
+  - *Modules 2 → 4/5:* colour thread — Module 2 builds the named Okabe `continent_colors`, but Modules 4–5 colour continents with scico `batlow`; decide whether to carry the named vector through.
+  - *Module 4:* the map-inset block in `solutions/04_patchwork_final.R` runs `library(rnaturalearth)`/`sf` live (errors without those optional packages) and names a variable `gap_europe` while filtering `continent == "Africa"` — clean up when building Module 4.
+  - *General:* `theme_workshop()`'s default signature passes `ink`/`paper`, which require ggplot2 ≥ 4.0 — make sure the install refreshes ggplot2.
+- **Working preference:** discuss module-specific design decisions when reaching that module, not all upfront.
 
 ## Data
 - All examples use the **gapminder** R package
