@@ -11,7 +11,7 @@ library(scales)
 gap_2007 <- gapminder |>
   filter(year == 2007)
 
-# Base plot ------------------------------------------------------------------
+# Base plots ------------------------------------------------------------------
 
 p_bubble <- ggplot(
   gap_2007,
@@ -25,6 +25,17 @@ p_bubble <- ggplot(
     y = "Life expectancy (years)",
     color = "Continent",
     size = "Population"
+  )
+
+p_box <- ggplot(
+  gap_2007,
+  aes(x = continent, y = lifeExp, fill = continent)
+) +
+  geom_boxplot() +
+  labs(
+    x = NULL,
+    y = "Life expectancy (years)",
+    fill = "Continent"
   )
 
 p_bubble
