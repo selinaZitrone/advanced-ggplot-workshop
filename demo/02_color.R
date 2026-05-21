@@ -29,9 +29,6 @@ p_bubble <- ggplot(
 
 # The problem with default colors --------------------------------------------
 
-p_bubble
-
-
 # Choose better colors --------------------------------------------------------------
 
 # Manual colors: Okabe-Ito ---------------------------------------------------------------

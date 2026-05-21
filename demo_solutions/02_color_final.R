@@ -1,5 +1,5 @@
-# Module 2: Color with intent - FINAL SCRIPT
-# This is the fully worked version. Open this if you fell behind during the demo.
+# Module 2: Color with intent (completed script)
+# Open this if you fell behind during the demo.
 
 library(ggplot2)
 library(dplyr)
@@ -31,7 +31,6 @@ p_bubble <- ggplot(
 
 # The default ggplot2 palette is not colorblind-safe.
 # cvdPlot() simulates how the plot looks with color vision deficiency.
-# Shrinking `text` via the inheritance tree keeps the 4-panel output readable.
 cvdPlot(p_bubble + theme(text = element_text(size = 8)))
 
 # Okabe-Ito from base R ------------------------------------------------------

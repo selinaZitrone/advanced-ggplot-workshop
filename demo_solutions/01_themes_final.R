@@ -1,5 +1,5 @@
-# Module 1: Custom themes - FINAL SCRIPT
-# This is the fully worked version. Open this if you fell behind during the demo.
+# Module 1: Custom themes (completed script)
+# Open this if you fell behind during the demo.
 
 library(ggplot2)
 library(dplyr)

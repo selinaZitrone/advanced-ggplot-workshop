@@ -1,5 +1,5 @@
-# Module 3: Multipanel layouts with patchwork - FINAL SCRIPT
-# This is the fully worked version. Open this if you fell behind during the demo.
+# Module 3: Multipanel layouts with patchwork (completed script)
+# Open this if you fell behind during the demo.
 
 library(ggplot2)
 library(dplyr)

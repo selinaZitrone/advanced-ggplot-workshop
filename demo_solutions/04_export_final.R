@@ -73,8 +73,7 @@ p_bubble_paper +
 
 # Step 4: export with ragg --------------------------------------------------
 
-# ragg::agg_png() is cross-platform, faster, and sharper than the default PNG
-# device in ggsave
+# ragg::agg_png() renders faster and sharper than the default PNG device.
 ggsave(
   here("plots", "bubble_paper.png"),
   plot = p_bubble_paper,
@@ -105,7 +104,7 @@ ggsave(
 
 # PDF with embedded fonts ----------------------------------------------------
 
-# cairo_pdf embeds fonts in the file and is a robust default
+# cairo_pdf embeds fonts in the file; good default for journal PDFs.
 ggsave(
   here("plots", "bubble_paper.pdf"),
   plot = p_bubble_paper,

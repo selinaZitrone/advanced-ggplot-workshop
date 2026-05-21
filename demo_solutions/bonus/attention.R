@@ -1,6 +1,6 @@
 # Bonus: Directing attention
 #
-# Not covered in the live workshop — included as bonus material to explore on your own.
+# Not covered in the live workshop. Included as bonus material to explore on your own.
 # Required packages (not in install_packages.R): gghighlight, ggrepel, ggtext
 # Install with: pak::pak(c("gghighlight", "ggrepel", "ggtext"))
 
