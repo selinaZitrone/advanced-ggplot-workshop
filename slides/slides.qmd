@@ -589,12 +589,11 @@ p_bubble_m5 <- p_bubble +
   labs(color = "Continent", size = "Population")
 ```
 
-## Same code, different canvas
+## Same plot, different canvas
 
 :::: {.columns}
 
 ::: {.column width="50%"}
-**Text too small**
 
 ```{r}
 #| echo: false
@@ -605,7 +604,6 @@ p_bubble_m5 + theme_workshop(base_size = 6)
 :::
 
 ::: {.column width="50%"}
-**Text too big**
 
 ```{r}
 #| echo: false
