@@ -107,7 +107,7 @@ We'll focus on:
 
 . . .
 
-Repo: **[link in the chat]**
+Repo: **<https://github.com/selinaZitrone/advanced-ggplot-workshop>**
 
 # Module 1: Custom themes
 
@@ -232,7 +232,7 @@ p_bubble
 
 ## Your turn
 
-### Task (~5 min)
+### Task (~7 min)
 
 > Open `exercises/01_themes_exercise.R`
 
@@ -564,7 +564,7 @@ Open `R/03_patchwork.R`.
 
 ## Your turn
 
-### Task (~5 min)
+### Task (~8 min)
 
 > Open `exercises/03_patchwork_exercise.R`
 
@@ -623,6 +623,17 @@ Open `R/04_export.R`.
 
 ## Your turn
 
-### Task (~5 min)
+### Task (~7 min)
 
 > Open `exercises/04_export_exercise.R`
+
+# Outro
+
+## Takeaways
+
+What you can take back to your own plots:
+
+1. **Custom themes**: write one `theme_*()` function, source it, `theme_set()` it everywhere it's needed
+2. **Colour with intent**: pick intuitive, colourblind-safe palettes (Okabe-Ito, viridis, scico), and check with `cvdPlot()`
+3. **Multi-panel layouts**: compose plots with `patchwork`, collect shared legends, add tag panels, ...
+4. **Export**: pick the canvas size, preview with `ggview::canvas()`, tweak `base_size` and geoms, and save with `ragg::ragg_png` or `cairo_pdf`.
