@@ -1,5 +1,8 @@
-# Module 3: Directing attention - FINAL SCRIPT
-# This is the fully worked version. Open this if you fell behind during the demo.
+# Bonus: Directing attention
+#
+# Not covered in the live workshop — included as bonus material to explore on your own.
+# Required packages (not in install_packages.R): gghighlight, ggrepel, ggtext
+# Install with: pak::pak(c("gghighlight", "ggrepel", "ggtext"))
 
 library(ggplot2)
 library(dplyr)

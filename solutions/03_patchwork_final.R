@@ -1,4 +1,4 @@
-# Module 4: Multipanel layouts with patchwork - FINAL SCRIPT
+# Module 3: Multipanel layouts with patchwork - FINAL SCRIPT
 # This is the fully worked version. Open this if you fell behind during the demo.
 
 library(ggplot2)

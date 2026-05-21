@@ -1,5 +1,5 @@
-# Module 4: Multipanel layouts with patchwork
-# If you fall behind, open solutions/04_patchwork_final.R to catch up
+# Module 3: Multipanel layouts with patchwork
+# If you fall behind, open solutions/03_patchwork_final.R to catch up
 
 library(ggplot2)
 library(dplyr)

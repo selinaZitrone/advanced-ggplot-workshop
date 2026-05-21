@@ -1,4 +1,4 @@
-# Module 5: Exporting figures in the right format
+# Module 4: Exporting figures in the right format
 
 library(ggplot2)
 library(dplyr)

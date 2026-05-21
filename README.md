@@ -19,12 +19,15 @@ source("install_packages.R")
 |---|-------|-------------|--------------|---------|
 | 1 | Custom themes | `R/01_themes.R` | `R/01_themes_final.R` | `exercises/01_themes_exercise.R` |
 | 2 | Color with intent | `R/02_color.R` | `R/02_color_final.R` | `exercises/02_color_exercise.R` |
-| 3 | Directing attention | `R/03_attention.R` | `R/03_attention_final.R` | `exercises/03_attention_exercise.R` |
-| 4 | Multipanel layouts | `R/04_patchwork.R` | `R/04_patchwork_final.R` | `exercises/04_patchwork_exercise.R` |
-| 5 | Exporting figures | `R/05_export.R` | `R/05_export_final.R` | `exercises/05_export_exercise.R` |
+| 3 | Multipanel layouts | `R/03_patchwork.R` | `R/03_patchwork_final.R` | `exercises/03_patchwork_exercise.R` |
+| 4 | Exporting figures | `R/04_export.R` | `R/04_export_final.R` | `exercises/04_export_exercise.R` |
 
 ## How to follow along
 
 - Open the **demo script** at the start of each module and code along with the instructor.
 - If you fall behind, open the **final script** to catch up before the exercise.
 - At the end of each module, work through the **exercise script** on your own.
+
+## Bonus material
+
+`solutions/bonus/attention.R` is a self-study module on directing attention with `gghighlight`, `ggrepel`, and `ggtext`. Not covered live — install the extra packages and explore at your own pace.

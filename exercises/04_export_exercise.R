@@ -1,5 +1,5 @@
-# Module 5 Exercise: Exporting figures
-# If you fell behind during the demo, open solutions/05_export_final.R to catch up first.
+# Module 4 Exercise: Exporting figures
+# If you fell behind during the demo, open solutions/04_export_final.R to catch up first.
 
 library(ggplot2)
 library(dplyr)

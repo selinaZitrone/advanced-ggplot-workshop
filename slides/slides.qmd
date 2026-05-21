@@ -85,9 +85,8 @@ We'll focus on:
 
 1. **Custom themes** — a consistent look, defined once
 2. **Colour** — with intent, and colourblind-safe
-3. **Directing attention** — guide the reader to the story
-4. **Multi-panel layouts** — combine plots with `patchwork`
-5. **Exporting** — at the right size and resolution
+3. **Multi-panel layouts** — combine plots with `patchwork`
+4. **Exporting** — at the right size and resolution
 
 …plus a few other handy extension packages along the way.
 
@@ -485,16 +484,7 @@ Open `R/02_color.R`.
 
 Stuck? See `solutions/02_color_final.R`.
 
-# Module 3: Directing attention
-
-## Coming up
-
-*(Slides to be built, see `workshop_notes.md`.)*
-
-- From spaghetti to a single story
-- `gghighlight`, `ggrepel`, `ggtext`, `annotate()`
-
-# Module 4: Multi-panel layouts
+# Module 3: Multi-panel layouts
 
 ```{r}
 #| label: m4-setup
@@ -570,16 +560,16 @@ The [patchwork documentation](https://patchwork.data-imaginist.com/) is excellen
 
 ## Live demo
 
-Open `R/04_patchwork.R`.
+Open `R/03_patchwork.R`.
 
 ## Your turn
 
 ### Task (~5 min)
 
-> Open `exercises/04_patchwork_exercise.R`
+> Open `exercises/03_patchwork_exercise.R`
 
 
-# Module 5: Exporting figures
+# Module 4: Exporting figures
 
 ```{r}
 #| label: m5-setup
@@ -629,10 +619,10 @@ Starting points for Canvas and font sizes:
 
 ## Live demo
 
-Open `R/05_export.R`.
+Open `R/04_export.R`.
 
 ## Your turn
 
 ### Task (~5 min)
 
-> Open `exercises/05_export_exercise.R`
+> Open `exercises/04_export_exercise.R`

@@ -312,7 +312,7 @@ scico_palette_names(categorical = TRUE)
 `scico_palette_names(categorical = TRUE)`
 - Use cvdPlot to inspect the colors
 
-## Module 4: patchwork
+## Module 3: patchwork
 
 ### Slides
 
@@ -404,13 +404,13 @@ p_bubble +
 
 ### Exercise
 
-- Open `exercises/04_patchwork_exercise.R`
+- Open `exercises/03_patchwork_exercise.R`
 - Asia data (a different subset from the demo): scatter, life-expectancy lines, GDP lines, already styled in steelblue
 - Tasks: stack two plots → arrange all three with `()` → apply `theme_workshop()` with `&` → add A/B/C tags via `plot_annotation()`
 - Stretch: try `inset_element()` on a corner of `p_scatter`
-- Catch-up: `solutions/04_patchwork_final.R`
+- Catch-up: `solutions/03_patchwork_final.R`
 
-## Module 5: Export
+## Module 4: Export
 
 ### Slides
 
@@ -532,8 +532,8 @@ ggsave(
 
 ### Exercise
 
-- Open `exercises/05_export_exercise.R`
+- Open `exercises/04_export_exercise.R`
 - Asia summary line chart (different subset, single colour — focus stays on sizing)
 - Tasks: 4-step workflow with `canvas()`, `base_size`, `ragg` for an outlet of your joice
 - Stretch: cairo_pdf
-- Catch-up: `solutions/05_export_final.R`
+- Catch-up: `solutions/04_export_final.R`

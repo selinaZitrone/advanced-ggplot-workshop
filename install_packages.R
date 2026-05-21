@@ -9,17 +9,17 @@ if (!requireNamespace("pak", quietly = TRUE)) install.packages("pak")
 pak::pak(c(
   "ggplot2", "dplyr", "gapminder", "scales", "here",  # core
   "colorBlindness", "scico",                          # Module 2 (color)
-  "gghighlight", "ggrepel", "ggtext",                  # Module 3 (attention)
-  "patchwork",                                         # Module 4 (multipanel)
-  "ragg", "ggview"                                     # Module 5 (export)
+  "patchwork",                                         # Module 3 (multipanel)
+  "ragg", "ggview"                                     # Module 4 (export)
 ))
 
-# Optional: used in demos but not required to follow along -------------------
+# Optional: used in demos / bonus material, not required to follow along ----
 
-# rnaturalearth + sf map inset demo at end of Module 4 (GitHub)
-# showtext           custom/Google fonts, briefly mentioned in Module 5
+# rnaturalearth + sf     map inset demo at end of Module 3 (GitHub)
+# gghighlight, ggrepel, ggtext  bonus module on directing attention
+#                               (solutions/bonus/attention.R)
 
 # pak::pak(c(
 #   "ropensci/rnaturalearth", "sf",
-#   "showtext"
+#   "gghighlight", "ggrepel", "ggtext"
 # ))

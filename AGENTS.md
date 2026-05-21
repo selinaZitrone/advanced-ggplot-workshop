@@ -33,10 +33,10 @@
 - Built module by module; `workshop_notes.md` currently scripts Intro + Modules 1–2
 
 ## Build progress & open items (handoff)
-- **Slides built so far:** Intro, Module 1 (Themes), Module 2 (Colour), and Module 4 (Patchwork) are fully built in `slides/slides.qmd`. Modules 3 and 5 are `#` section-divider stubs ("coming up"). Deck renders with `quarto render slides/slides.qmd` (needs the workshop R packages; `slides/slides.html` is gitignored).
+- **All four modules built:** Intro, Module 1 (Themes), Module 2 (Colour), Module 3 (Patchwork), Module 4 (Export), and Outro are scripted in `workshop_notes.md` and fully built in `slides/slides.qmd`. Deck renders with `quarto render slides/slides.qmd` (needs the workshop R packages; `slides/slides.html` is gitignored).
+- **Module 3 (Directing attention) cut for time** on 2026-05-21 (originally planned at 22 min; would have left only ~10 min buffer in the 2 h slot). The completed final script is kept as `solutions/bonus/attention.R` for self-study; required packages (`gghighlight`, `ggrepel`, `ggtext`) are listed as optional in `install_packages.R`. After the renumbering, Patchwork is Module 3 and Export is Module 4.
 - **Per-module workflow:** (1) instructor scripts the module in `workshop_notes.md`, (2) review/agree on content & length, (3) build the slides and adjust the demo/exercise scripts. Resolve `DISCUSS:` tokens in `workshop_notes.md` directly when there's a clear best answer; otherwise raise them.
-- **Open review items to raise at the relevant module:**
-  - *Module 5:* colour thread — Module 2 builds the named Okabe `continent_colors`; Module 4 went with scico `batlow` (decided). Decide whether Module 5 carries the named vector through or follows Module 4's batlow.
+- **Open review items:**
   - *General:* `theme_workshop()`'s default signature passes `ink`/`paper`, which require ggplot2 ≥ 4.0 — make sure the install refreshes ggplot2.
 - **Working preference:** discuss module-specific design decisions when reaching that module, not all upfront.
 
@@ -44,10 +44,9 @@
 - All examples use the **gapminder** R package
 - Key recurring objects:
   - `gap_2007` — filtered to year == 2007 (bubble chart anchor)
-  - `gap_continent` — mean lifeExp per continent per year (line chart)
-  - `gap_asia` — Asian countries only (used in Module 3 exercise)
-  - `gap_europe` — European countries only (used in Module 3 demo)
-- **Thread**: bubble chart (gdpPercap vs lifeExp, colored by continent) is the main recurring plot across modules 1–2
+  - `gap_continent` — mean lifeExp per continent per year (line chart, Module 3)
+  - `gap_asia` — Asian countries only (Module 4 exercise)
+- **Thread**: bubble chart (gdpPercap vs lifeExp, colored by continent) is the recurring plot across all four modules
 
 ## Timing
 
@@ -56,12 +55,11 @@
 | Intro            | 10 min |
 | Module 1 Themes  | 15 min |
 | Module 2 Color   | 18 min |
-| Module 3 Attention | 22 min |
 | Break            | 8 min  |
-| Module 4 Patchwork | 18 min |
-| Module 5 Export  | 10 min |
+| Module 3 Patchwork | 18 min |
+| Module 4 Export  | 10 min |
 | Outro            | 9 min  |
-| **Total**        | **110 min** |
+| **Total**        | **88 min** (32 min buffer in 2 h slot) |
 
 ## Exercise design principles
 - Exercises apply the skill to a *different* subset or plot than the demo (transfer, not copy-paste)
@@ -84,9 +82,9 @@ theme_workshop <- function(base_size = 16, ink = "grey20", paper = "white") {
 }
 ```
 Key decisions:
-- `base_size = 16` — larger default for screenshare readability; Module 5 will show `base_size = 11/12` for publication
+- `base_size = 16` — larger default for screenshare readability; Module 4 drops to `base_size = 14` for a 180 mm paper canvas
 - `panel.border` removed — `theme_light()` + `ink` already handles it; no need to hard-code a color
-- `plot.title` not suppressed — just don't include it in `labs()` (except Module 3 where ggtext title is the point)
+- `plot.title` not suppressed — just don't include it in `labs()`
 - Only `legend.text` is stepped down with `rel()` — axis text stays at `base_size` (that's what it means)
 - `ink`/`paper` passed through to `theme_light()` — brief demo of changing both for poster vs paper
 
@@ -134,37 +132,14 @@ Double-encoding concept mentioned on slides only (works better on line/bar chart
 
 **Packages:** `colorBlindness`, `scico`
 
-### Module 3 — Directing attention (22 min) ✅ COMPLETE
-**Scripts:** `R/03_attention.R`, `R/03_attention_final.R`, `exercises/03_attention_exercise.R`
+### Bonus — Directing attention (cut for time, kept as self-study)
+**Script:** `solutions/bonus/attention.R` (renamed from `solutions/03_attention_final.R`).
+Required packages — `gghighlight`, `ggrepel`, `ggtext` — are in the *optional* block of `install_packages.R`.
 
-**Demo story: Europe — life expectancy, Germany vs Poland**
-- `gap_europe` = all European countries (spaghetti background)
-- Highlight: **Germany** (`#E69F00`) and **Poland** (`#0072B2`)
-- Story: Germany climbed steadily (post-WWII recovery); Poland plateaued under communism (1965–1990), then accelerated sharply after 1989
-- Key data: Poland lifeExp 70.8 (1972) → 71.0 (1992) → 75.6 (2007)
-- `annotate()` label: "1989: fall of the Berlin Wall" — placed near x=1992, y=66
-- Arrow to Poland's 1992 point is **optional / if time allows** (marked in script)
-- Title uses `element_markdown()` with colored country names
+Originally Module 3 (22 min); cut on 2026-05-21 to leave healthy buffer in the 2 h slot. The demo story (Europe life expectancy, Germany vs Poland) and exercise story (Asia GDP, China vs India) live in the script for anyone who wants to work through it.
 
-**Exercise story: Asia — GDP per capita, China vs India**
-- `gap_asia` = all Asian countries
-- Highlight: China and India
-- 5 tasks: gghighlight → named colors → ggrepel endpoints → ggtext title → annotate (stretch)
-- Stretch: annotate China's 1978 reform period
-
-**Progression (both demo and exercise):**
-gghighlight → scale_color_manual (named vector) → geom_text_repel + drop legend → element_markdown title → annotate
-
-**Status:** Scripts written, not yet reviewed/tested by instructor.
-TODO: Run `03_attention_final.R` end-to-end to verify annotation position looks right on screen.
-
-**Slides for Module 3:**
-- Before/after spaghetti → highlighted plot
-- One principle: "A plot should have one story"
-- When to use direct labels vs legend
-
-### Module 4 — Multipanel with patchwork (18 min) ✅ COMPLETE
-**Scripts:** `R/04_patchwork.R`, `R/04_patchwork_final.R`, `exercises/04_patchwork_exercise.R`
+### Module 3 — Multipanel with patchwork (18 min) ✅ COMPLETE
+**Scripts:** `R/03_patchwork.R`, `solutions/03_patchwork_final.R`, `exercises/03_patchwork_exercise.R`
 
 **Three plots used (all colored by continent via `scale_color_scico_d(palette = "batlow")`):**
 - `p_bubble` — gdpPercap vs lifeExp, sized by pop (2007 snapshot) — recurring anchor
@@ -183,27 +158,36 @@ TODO: Run `03_attention_final.R` end-to-end to verify annotation position looks 
 5. `&` refactor — strip `theme_workshop()` and `scale_color_scico_d()` from individual plots, apply once at composition level; `_bare` plot variants make before/after explicit
 6. `plot_annotation(tag_levels = "A")` — automatic panel tags
 7. `inset_element()` — `p_life` inset into corner of `p_bubble` (if time allows)
-8. Optional Europe locator-map inset at end of final script — recreates the Module 3 Germany/Poland story with a map inset (requires `rnaturalearth` + `sf`; skip if running behind)
+8. Optional Europe locator-map inset at end of final script — Germany/Poland life-expectancy lines with a map inset (requires `rnaturalearth` + `sf`; skip if running behind)
 
 **Key decision:** Scripts are self-contained — `theme_workshop()` redefined inline with a `# from Module 1` comment.
 
-### Module 5 — Export (10 min) ✅ COMPLETE
-**Scripts:** `R/05_export.R`, `R/05_export_final.R`, `exercises/05_export_exercise.R`
+### Module 4 — Export (10 min) ✅ COMPLETE
+**Scripts:** `R/04_export.R`, `solutions/04_export_final.R`, `exercises/04_export_exercise.R`
 
-**Narrative arc:**
-1. Default `ggsave()` — no dimensions, problem with reproducibility
-2. Explicit `width`/`height`/`units`/`dpi` — target sizes: paper 89 mm, slide 150 mm, poster 200 mm
-3. `ggview()` — preview at exact export size in plot pane before saving
-4. `base_size` payoff: `base_size = 16` for screenshare → `base_size = 11/12` for print
-5. `device = ragg::agg_png` — cross-platform, sharper text
-6. `device = cairo_pdf` — embedded fonts for journal submission
-7. `showtext` — brief mention for custom/Google fonts (commented example)
+**Narrative arc — the 4-step workflow:**
+1. **Pick canvas** for the outlet (demo: 180 × 110 mm, double-column paper)
+2. **Preview with `ggview::canvas()`** — see the plot at true export size in the plot pane
+3. **Tune `base_size`** for the canvas (demo drops 16 → 14)
+4. **Export with `ragg::agg_png`** at the chosen dimensions and 300 dpi
 
-**Exercise:** Uses Asia summary line chart (single color, no legend — simpler than demo).
+Also covered:
+- Default `ggsave()` shown first as the failure mode (no dimensions → not reproducible)
+- Second canvas (half slide, 150 × 130 mm) at the end to reinforce that the workflow is fixed but the numbers change
+- `cairo_pdf` for vector PDF with embedded fonts (one-block mention for journal submission)
+- **Cut:** `showtext` removed entirely on 2026-05-20 (user decision)
+
+**Key decisions:**
+- No `theme_set()` in this module — `theme_workshop()` applied explicitly per plot so the `base_size` choice stays visible
+- Colour thread: stays with `scale_color_scico_d("batlow")` from Module 3 (resolved — does not switch back to Module 2's `continent_colors`)
+- Slides: 2 content slides only (problem side-by-side + rule-of-thumb table); the 4-step workflow lives in the live demo, not on slides
+
+**Exercise:** Uses Asia summary line chart (single colour, no legend — simpler than demo). One workflow, one save, plus PDF stretch.
 
 ## Packages used across workshop
-- ggplot2, dplyr, gapminder, scales
-- colorBlindness, scico
-- gghighlight, ggrepel, ggtext
-- patchwork
-- ragg, ggview
+- ggplot2, dplyr, gapminder, scales, here (core)
+- colorBlindness, scico (Module 2)
+- patchwork (Module 3)
+- ragg, ggview (Module 4)
+- **Bonus only:** gghighlight, ggrepel, ggtext (for `solutions/bonus/attention.R`; in the optional block of `install_packages.R`)
+- **Optional demo extra:** rnaturalearth, sf (Module 3 map-inset bonus)
