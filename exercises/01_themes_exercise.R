@@ -33,4 +33,4 @@ p_lines
 # 4. Apply theme_custom() to p_lines
 #
 # Finished early? Try different base_size values, or add more customizations.
-# Stuck? See solutions/01_themes_final.R
+# Stuck? See demo_solutions/01_themes_final.R

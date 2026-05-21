@@ -1,5 +1,5 @@
 # Module 3 Exercise: Multipanel layouts with patchwork
-# If you fell behind during the demo, open solutions/03_patchwork_final.R to catch up first.
+# If you fell behind during the demo, open demo_solutions/03_patchwork_final.R to catch up first.
 
 library(ggplot2)
 library(dplyr)
@@ -8,7 +8,7 @@ library(patchwork)
 library(scales)
 library(scico)
 
-source(here::here("solutions", "theme.R")) # loads theme_workshop()
+source(here::here("demo_solutions", "theme.R")) # loads theme_workshop()
 
 # Data -----------------------------------------------------------------------
 

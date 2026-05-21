@@ -9,7 +9,7 @@ library(ragg)
 library(ggview)
 library(here)
 
-source(here("solutions", "theme.R"))
+source(here("demo_solutions", "theme.R"))
 
 # Create a plot director (if it doesn't already exist)
 dir.create(here("plots"), showWarnings = FALSE)

@@ -137,7 +137,7 @@ theme_workshop <- function(base_size = 16){
 
 - Create `theme.R`
 - Copy paste the theme in there
-- Use `source(here::here("R", "theme.R"))` to load the theme
+- Use `source(here::here("demo", "theme.R"))` to load the theme
 
 - Now it can also be used in other files. Just add the source line on top
 
@@ -408,7 +408,7 @@ p_bubble +
 - Asia data (a different subset from the demo): scatter, life-expectancy lines, GDP lines, already styled in steelblue
 - Tasks: stack two plots → arrange all three with `()` → apply `theme_workshop()` with `&` → add A/B/C tags via `plot_annotation()`
 - Stretch: try `inset_element()` on a corner of `p_scatter`
-- Catch-up: `solutions/03_patchwork_final.R`
+- Catch-up: `demo_solutions/03_patchwork_final.R`
 
 ## Module 4: Export
 
@@ -536,4 +536,4 @@ ggsave(
 - Asia summary line chart (different subset, single colour — focus stays on sizing)
 - Tasks: 4-step workflow with `canvas()`, `base_size`, `ragg` for an outlet of your joice
 - Stretch: cairo_pdf
-- Catch-up: `solutions/04_export_final.R`
+- Catch-up: `demo_solutions/04_export_final.R`

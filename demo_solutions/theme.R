@@ -3,7 +3,7 @@
 #
 # Keeping the theme in its own file means every script can share one definition.
 # To load it in any script, use source():
-#   source(here::here("solutions", "theme.R")) or source("solutions/theme.R")
+#   source(here::here("demo_solutions", "theme.R")) or source("demo_solutions/theme.R")
 
 theme_workshop <- function(base_size = 16, ink = "grey20", paper = "white") {
   theme_light(base_size = base_size, ink = ink, paper = paper) %+replace%

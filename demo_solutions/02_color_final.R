@@ -8,7 +8,7 @@ library(scales)
 library(colorBlindness)
 library(scico)
 
-source(here::here("solutions", "theme.R")) # loads theme_workshop()
+source(here::here("demo_solutions", "theme.R")) # loads theme_workshop()
 theme_set(theme_workshop())
 
 gap_2007 <- gapminder |> filter(year == 2007)

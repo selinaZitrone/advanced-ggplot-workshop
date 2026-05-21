@@ -8,7 +8,7 @@ library(patchwork)
 library(scales)
 library(scico)
 
-source(here::here("solutions", "theme.R")) # loads theme_workshop()
+source(here::here("demo_solutions", "theme.R")) # loads theme_workshop()
 
 # Data -----------------------------------------------------------------------
 

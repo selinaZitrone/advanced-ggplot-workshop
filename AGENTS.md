@@ -8,21 +8,21 @@
 - **Repo**: Shared with students ahead of time
 
 ## Repository conventions
-- Each module has a **starting script** in `R/` (e.g. `R/01_themes.R`) and a **final script** in `solutions/` (e.g. `solutions/01_themes_final.R`)
+- Each module has a **starting script** in `demo/` (e.g. `demo/01_themes.R`) and a **final script** in `demo_solutions/` (e.g. `demo_solutions/01_themes_final.R`)
 - Starting script = what instructor opens at the beginning of the module (scaffolded, no finished code)
 - Final script = fully worked version students can open if they fall behind
 - Add this comment near the top of every starting script:
-  `# If you fall behind, open solutions/01_themes_final.R to catch up`
+  `# If you fall behind, open demo_solutions/01_themes_final.R to catch up`
 - Exercises are R scripts in `exercises/` (e.g. `exercises/01_themes_exercise.R`)
 
 ### Theme sourcing model
 - `theme_workshop()` lives in **one** place per "track" instead of being copy-pasted:
-  - `solutions/theme.R` — the complete theme; **ships in the repo**, always present
-  - `R/theme.R` — **does not exist in the repo**; the instructor *creates it live* during the Module 1 demo (the "move your theme into its own file" beat)
+  - `demo_solutions/theme.R` — the complete theme; **ships in the repo**, always present
+  - `demo/theme.R` — **does not exist in the repo**; the instructor *creates it live* during the Module 1 demo (the "move your theme into its own file" beat)
 - Who sources what:
-  - `R/` working scripts (Modules 2–5) → `source(here::here("R", "theme.R"))` (the file built live; this is the teaching payoff — "now every script reuses your theme")
-  - `solutions/` finals and **all** `exercises/` → `source(here::here("solutions", "theme.R"))` (always present + guaranteed correct, so catch-up and exercises never break on a demo typo)
-- Because Modules 2–5 depend on `R/theme.R`, **creating it in Module 1 is load-bearing** — that demo beat cannot be cut for time. (If trimming Module 1, cut the optional `ink`/`paper` bit instead.)
+  - `demo/` working scripts (Modules 2–5) → `source(here::here("demo", "theme.R"))` (the file built live; this is the teaching payoff — "now every script reuses your theme")
+  - `demo_solutions/` finals and **all** `exercises/` → `source(here::here("demo_solutions", "theme.R"))` (always present + guaranteed correct, so catch-up and exercises never break on a demo typo)
+- Because Modules 2–5 depend on `demo/theme.R`, **creating it in Module 1 is load-bearing** — that demo beat cannot be cut for time. (If trimming Module 1, cut the optional `ink`/`paper` bit instead.)
 - The recurring `p_bubble` is defined inline in each module's scripts (each module is self-contained) rather than imported across modules.
 
 ## Slides
@@ -34,7 +34,7 @@
 
 ## Build progress & open items (handoff)
 - **All four modules built:** Intro, Module 1 (Themes), Module 2 (Colour), Module 3 (Patchwork), Module 4 (Export), and Outro are scripted in `workshop_notes.md` and fully built in `slides/slides.qmd`. Deck renders with `quarto render slides/slides.qmd` (needs the workshop R packages; `slides/slides.html` is gitignored).
-- **Module 3 (Directing attention) cut for time** on 2026-05-21 (originally planned at 22 min; would have left only ~10 min buffer in the 2 h slot). The completed final script is kept as `solutions/bonus/attention.R` for self-study; required packages (`gghighlight`, `ggrepel`, `ggtext`) are listed as optional in `install_packages.R`. After the renumbering, Patchwork is Module 3 and Export is Module 4.
+- **Module 3 (Directing attention) cut for time** on 2026-05-21 (originally planned at 22 min; would have left only ~10 min buffer in the 2 h slot). The completed final script is kept as `demo_solutions/bonus/attention.R` for self-study; required packages (`gghighlight`, `ggrepel`, `ggtext`) are listed as optional in `install_packages.R`. After the renumbering, Patchwork is Module 3 and Export is Module 4.
 - **Per-module workflow:** (1) instructor scripts the module in `workshop_notes.md`, (2) review/agree on content & length, (3) build the slides and adjust the demo/exercise scripts. Resolve `DISCUSS:` tokens in `workshop_notes.md` directly when there's a clear best answer; otherwise raise them.
 - **Open review items:**
   - *General:* `theme_workshop()`'s default signature passes `ink`/`paper`, which require ggplot2 ≥ 4.0 — make sure the install refreshes ggplot2.
@@ -69,7 +69,7 @@
 ## Module content decisions
 
 ### Module 1 — Custom themes (15 min) ✅ COMPLETE
-**Scripts:** `R/01_themes.R`, `R/01_themes_final.R`, `exercises/01_themes_exercise.R`
+**Scripts:** `demo/01_themes.R`, `demo_solutions/01_themes_final.R`, `exercises/01_themes_exercise.R`
 
 **`theme_workshop()` — settled design:**
 ```r
@@ -102,7 +102,7 @@ Key decisions:
 **Cut:** `%+replace%` explanation (used silently), transparent background (mention only), deep ink/paper dive
 
 ### Module 2 — Color with intent (18 min) ✅ COMPLETE
-**Scripts:** `R/02_color.R`, `R/02_color_final.R`, `exercises/02_color_exercise.R`
+**Scripts:** `demo/02_color.R`, `demo_solutions/02_color_final.R`, `exercises/02_color_exercise.R`
 - Deleted outdated draft `exercises/02_color.R` (used old `colorblindr`/`paletteer` API)
 
 **Okabe-Ito palette — settled design:**
@@ -133,13 +133,13 @@ Double-encoding concept mentioned on slides only (works better on line/bar chart
 **Packages:** `colorBlindness`, `scico`
 
 ### Bonus — Directing attention (cut for time, kept as self-study)
-**Script:** `solutions/bonus/attention.R` (renamed from `solutions/03_attention_final.R`).
+**Script:** `demo_solutions/bonus/attention.R` (renamed from `demo_solutions/03_attention_final.R`).
 Required packages — `gghighlight`, `ggrepel`, `ggtext` — are in the *optional* block of `install_packages.R`.
 
 Originally Module 3 (22 min); cut on 2026-05-21 to leave healthy buffer in the 2 h slot. The demo story (Europe life expectancy, Germany vs Poland) and exercise story (Asia GDP, China vs India) live in the script for anyone who wants to work through it.
 
 ### Module 3 — Multipanel with patchwork (18 min) ✅ COMPLETE
-**Scripts:** `R/03_patchwork.R`, `solutions/03_patchwork_final.R`, `exercises/03_patchwork_exercise.R`
+**Scripts:** `demo/03_patchwork.R`, `demo_solutions/03_patchwork_final.R`, `exercises/03_patchwork_exercise.R`
 
 **Three plots used (all colored by continent via `scale_color_scico_d(palette = "batlow")`):**
 - `p_bubble` — gdpPercap vs lifeExp, sized by pop (2007 snapshot) — recurring anchor
@@ -163,7 +163,7 @@ Originally Module 3 (22 min); cut on 2026-05-21 to leave healthy buffer in the 2
 **Key decision:** Scripts are self-contained — `theme_workshop()` redefined inline with a `# from Module 1` comment.
 
 ### Module 4 — Export (10 min) ✅ COMPLETE
-**Scripts:** `R/04_export.R`, `solutions/04_export_final.R`, `exercises/04_export_exercise.R`
+**Scripts:** `demo/04_export.R`, `demo_solutions/04_export_final.R`, `exercises/04_export_exercise.R`
 
 **Narrative arc — the 4-step workflow:**
 1. **Pick canvas** for the outlet (demo: 180 × 110 mm, double-column paper)
@@ -189,5 +189,5 @@ Also covered:
 - colorBlindness, scico (Module 2)
 - patchwork (Module 3)
 - ragg, ggview (Module 4)
-- **Bonus only:** gghighlight, ggrepel, ggtext (for `solutions/bonus/attention.R`; in the optional block of `install_packages.R`)
+- **Bonus only:** gghighlight, ggrepel, ggtext (for `demo_solutions/bonus/attention.R`; in the optional block of `install_packages.R`)
 - **Optional demo extra:** rnaturalearth, sf (Module 3 map-inset bonus)

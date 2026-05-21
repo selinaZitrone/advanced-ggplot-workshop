@@ -1,5 +1,5 @@
 # Module 4 Exercise: Exporting figures
-# If you fell behind during the demo, open solutions/04_export_final.R to catch up first.
+# If you fell behind during the demo, open demo_solutions/04_export_final.R to catch up first.
 
 library(ggplot2)
 library(dplyr)
@@ -8,7 +8,7 @@ library(ragg)
 library(ggview)
 library(here)
 
-source(here::here("solutions", "theme.R"))
+source(here::here("demo_solutions", "theme.R"))
 
 dir.create(here("plots"), showWarnings = FALSE)
 

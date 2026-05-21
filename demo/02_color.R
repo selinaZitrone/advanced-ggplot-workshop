@@ -1,5 +1,5 @@
 # Module 2: Color with intent
-# If you fall behind, open solutions/02_color_final.R to catch up
+# If you fall behind, open demo_solutions/02_color_final.R to catch up
 
 library(ggplot2)
 library(dplyr)
@@ -8,7 +8,7 @@ library(scales)
 library(colorBlindness)
 library(scico)
 
-source(here::here("R", "theme.R")) # theme_workshop() (you create theme.R in Module 1)
+source(here::here("demo", "theme.R")) # theme_workshop() (you create theme.R in Module 1)
 theme_set(theme_workshop())
 
 gap_2007 <- gapminder |> filter(year == 2007)

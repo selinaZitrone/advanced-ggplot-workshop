@@ -12,7 +12,7 @@ library(ggrepel)
 library(ggtext)
 library(scales)
 
-source(here::here("solutions", "theme.R")) # loads theme_workshop()
+source(here::here("demo_solutions", "theme.R")) # loads theme_workshop()
 theme_set(theme_workshop())
 
 gap_europe <- gapminder |> filter(continent == "Europe")

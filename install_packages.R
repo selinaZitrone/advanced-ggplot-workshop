@@ -17,7 +17,7 @@ pak::pak(c(
 
 # rnaturalearth + sf     map inset demo at end of Module 3 (GitHub)
 # gghighlight, ggrepel, ggtext  bonus module on directing attention
-#                               (solutions/bonus/attention.R)
+#                               (demo_solutions/bonus/attention.R)
 
 # pak::pak(c(
 #   "ropensci/rnaturalearth", "sf",

@@ -17,10 +17,10 @@ source("install_packages.R")
 
 | # | Topic | Demo script | Final script | Exercise |
 |---|-------|-------------|--------------|---------|
-| 1 | Custom themes | `R/01_themes.R` | `R/01_themes_final.R` | `exercises/01_themes_exercise.R` |
-| 2 | Color with intent | `R/02_color.R` | `R/02_color_final.R` | `exercises/02_color_exercise.R` |
-| 3 | Multipanel layouts | `R/03_patchwork.R` | `R/03_patchwork_final.R` | `exercises/03_patchwork_exercise.R` |
-| 4 | Exporting figures | `R/04_export.R` | `R/04_export_final.R` | `exercises/04_export_exercise.R` |
+| 1 | Custom themes | `demo/01_themes.R` | `demo_solutions/01_themes_final.R` | `exercises/01_themes_exercise.R` |
+| 2 | Color with intent | `demo/02_color.R` | `demo_solutions/02_color_final.R` | `exercises/02_color_exercise.R` |
+| 3 | Multipanel layouts | `demo/03_patchwork.R` | `demo_solutions/03_patchwork_final.R` | `exercises/03_patchwork_exercise.R` |
+| 4 | Exporting figures | `demo/04_export.R` | `demo_solutions/04_export_final.R` | `exercises/04_export_exercise.R` |
 
 ## How to follow along
 
@@ -30,4 +30,4 @@ source("install_packages.R")
 
 ## Bonus material
 
-`solutions/bonus/attention.R` is a self-study module on directing attention with `gghighlight`, `ggrepel`, and `ggtext`. Not covered live — install the extra packages and explore at your own pace.
+`demo_solutions/bonus/attention.R` is a self-study module on directing attention with `gghighlight`, `ggrepel`, and `ggtext`. Not covered live — install the extra packages and explore at your own pace.

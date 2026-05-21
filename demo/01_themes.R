@@ -1,5 +1,5 @@
 # Module 1: Custom themes
-# If you fall behind, open solutions/01_themes_final.R to catch up
+# If you fall behind, open demo_solutions/01_themes_final.R to catch up
 
 library(ggplot2)
 library(dplyr)

@@ -7,7 +7,7 @@ library(gapminder)
 library(scales)
 
 # Load the custom theme function from theme.R
-source(here::here("solutions", "theme.R"))
+source(here::here("demo_solutions", "theme.R"))
 
 # Data -----------------------------------------------------------------------
 

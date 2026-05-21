@@ -12,7 +12,7 @@ library(scales)
 library(colorBlindness)
 library(scico)
 
-source(here::here("solutions", "theme.R"))
+source(here::here("demo_solutions", "theme.R"))
 theme_set(theme_workshop())
 
 gap_continent <- gapminder |>
