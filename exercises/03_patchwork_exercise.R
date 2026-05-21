@@ -70,23 +70,17 @@ p_gdp_asia <- ggplot(
   )
 
 # Task 1: Combine two plots --------------------------------------------------
-
-# Stack p_scatter and p_life_asia vertically.
+# Stack p_scatter and p_life_asia vertically
 
 # Task 2: Add the third plot -------------------------------------------------
-
 # Arrange all three plots so the scatter is on the left and the two line charts
-# are stacked on the right. Use () to group panels.
+# are stacked on the right. Use () to group plots
 
 # Task 3: Apply theme_workshop() with & --------------------------------------
 
-# Apply theme_workshop() to the whole composition using &.
-
-# Task 4: Add panel tags -----------------------------------------------------
-
+# Task 4: Add panel tags with plot_annotation() ------------------------------
 # Add automatic A/B/C panel tags using plot_annotation().
 
 # If you have time: Inset ----------------------------------------------------
-
 # Place p_life_asia as a small inset in a corner of p_scatter.
 # Adjust left/bottom/right/top until the positioning looks good.
