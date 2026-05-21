@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(convert -density 150 \"slides/ggplot_theme_system_cheatsheet.pdf[0]\" \"slides/theme_cheatsheet.png\")",
-      "Bash(Rscript -e 'if\\(requireNamespace\\(\"pdftools\",quietly=TRUE\\)\\){pdftools::pdf_convert\\(\"slides/ggplot_theme_system_cheatsheet.pdf\", format=\"png\", pages=1, dpi=150, filenames=\"slides/theme_cheatsheet.png\"\\); cat\\(\"OK via pdftools\\\\n\"\\)} else {cat\\(\"NO pdftools installed\\\\n\"\\)}')"
-    ]
-  }
-}
