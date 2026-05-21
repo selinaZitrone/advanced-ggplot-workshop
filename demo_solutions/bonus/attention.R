@@ -87,12 +87,12 @@ p_final
 p_final +
   annotate(
     "label",
-    x = 1992, y = 66,
+    x = 1992,
+    y = 66,
     label = "1989: fall of the\nBerlin Wall",
     hjust = 0,
     color = "grey40",
     size = 3.5,
-    label.size = 0,
     fill = "white"
   )
 
@@ -101,7 +101,8 @@ p_final +
 p_final +
   annotate(
     "label",
-    x = 1992, y = 66,
+    x = 1992,
+    y = 66,
     label = "1989: fall of the\nBerlin Wall",
     hjust = 0,
     color = "grey40",
@@ -111,7 +112,10 @@ p_final +
   ) +
   annotate(
     "segment",
-    x = 1993, xend = 1992, y = 68.5, yend = 70.9,
+    x = 1993,
+    xend = 1992,
+    y = 68.5,
+    yend = 70.9,
     arrow = arrow(length = unit(0.2, "cm")),
     color = "grey40"
   )
