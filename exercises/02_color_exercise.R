@@ -3,6 +3,10 @@
 # Apply what you learned about colorblind-safe palettes to a different plot,
 # the continent line chart.
 #
+# If stuck:
+#   demo_solutions/02_color_final.R                  -> live demo
+#   exercise_solutions/02_color_exercise_solution.R  -> exercise solution
+#
 # Setup: run this block first ------------------------------------------------
 
 library(ggplot2)

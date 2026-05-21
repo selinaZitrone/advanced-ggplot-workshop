@@ -25,3 +25,4 @@ source("install_packages.R")
 - Open the **demo script** at the start of each module and code along with the instructor.
 - If you fall behind, open the **final script** to catch up before the exercise.
 - At the end of each module, work through the **exercise script** on your own.
+- Stuck on an exercise? See `exercise_solutions/` for a worked answer.

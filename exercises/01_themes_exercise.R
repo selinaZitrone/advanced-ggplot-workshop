@@ -1,4 +1,8 @@
 # Module 1 Exercise: Custom themes (about 5 min)
+#
+# If stuck:
+#   demo_solutions/01_themes_final.R                  -> live demo
+#   exercise_solutions/01_themes_exercise_solution.R  -> exercise solution
 
 library(ggplot2)
 library(dplyr)
@@ -33,4 +37,3 @@ p_lines
 # 4. Apply theme_custom() to p_lines
 #
 # Finished early? Try different base_size values, or add more customizations.
-# Stuck? See demo_solutions/01_themes_final.R

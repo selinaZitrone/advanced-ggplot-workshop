@@ -1,5 +1,8 @@
 # Module 3 Exercise: Multipanel layouts with patchwork
-# If you fell behind during the demo, open demo_solutions/03_patchwork_final.R to catch up first.
+#
+# If stuck:
+#   demo_solutions/03_patchwork_final.R                  -> live demo
+#   exercise_solutions/03_patchwork_exercise_solution.R  -> exercise solution
 
 library(ggplot2)
 library(dplyr)

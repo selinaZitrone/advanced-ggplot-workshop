@@ -1,5 +1,8 @@
 # Module 4 Exercise: Exporting figures
-# If you fell behind during the demo, open demo_solutions/04_export_final.R to catch up first.
+#
+# If stuck:
+#   demo_solutions/04_export_final.R                  -> live demo
+#   exercise_solutions/04_export_exercise_solution.R  -> exercise solution
 
 library(ggplot2)
 library(dplyr)
