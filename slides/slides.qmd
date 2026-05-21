@@ -54,46 +54,43 @@ p_bubble <- ggplot(
 
 # Intro
 
-## Default → publication-ready
+## From default to publication-ready
 
-A ggplot is easy to make. A *publication-ready* ggplot takes a few more deliberate choices.
+- Making a first plot is easy, but making it publication-ready takes more work, choices and iterations
 
 So many things you can tune:
 
-- The plot itself — which geoms to pick
+- The plot itself: which geoms to pick
 - Themes, colours, fonts
 - How to highlight your results
-- Combining plots into panels
-- Exporting at a readable size for the target medium
+- Creating multi-panel plots
+- Exporting at a readable size
 
 . . .
 
-Different outputs want different tweaks — a **poster** or **talk** is not a **journal figure**.
-
-## It's a rabbit hole
-
-- ggplot2 has a whole ecosystem of extension packages for all of this
-- You can spend endless time here
-
-. . .
-
-Today I'll show you a handful of **techniques and packages I find genuinely useful** — not an exhaustive tour, there's much more.
+Different outputs (poster/talk/journal figure) require different tweaks
 
 ## Today
 
 We'll focus on:
 
-1. **Custom themes** — a consistent look, defined once
-2. **Colour** — with intent, and colourblind-safe
-3. **Multi-panel layouts** — combine plots with `patchwork`
-4. **Exporting** — at the right size and resolution
+1. **Custom themes** for a consistent look
+2. **Colour** choice
+3. **Multi-panel layouts**: how to combine plots
+4. **Exporting** plots at the right size and resolution
 
-…plus a few other handy extension packages along the way.
+
+::: {.callout-note}
+
+This is not an exhaustive list, there is so much more ggplot extension packages and tricks out there.
+
+:::
+
 
 ## How it works
 
 - There's a **GitHub repo** you download and open in your IDE (I'll use Positron)
-- I demonstrate each topic — **follow along or just watch**, both are fine
+- I demonstrate each topic: **follow along or just watch**
 - Each module has a short **exercise** to play with the concept
 - **Questions** anytime: in the chat or just unmute
 
@@ -102,7 +99,7 @@ We'll focus on:
 1. Click the green **Code** button → **Download ZIP**
 2. Unzip it somewhere you can find it
 3. Double-click the `.Rproj` file → opens in RStudio
-   - *(Positron users: open the folder)*
+   - *(Positron/VS code users: open the folder)*
 4. Run `install_packages.R` to install today's packages
 
 . . .
@@ -148,11 +145,7 @@ wrap_plots(
 
 A theme controls everything that isn't data: Fonts, sizes, colours, grid lines, spacing, legends, ...
 
-<iframe src="ggplot_theme_system_cheatsheet.pdf" width="100%" height="460" style="border:none;"></iframe>
-
-::: {.aside}
-ggplot2 theme-system cheatsheet (Henry Wang). Open the PDF in `slides/` for the full reference.
-:::
+![ggplot2 theme-system cheatsheet (by [Clara Granell](https://github.com/claragranell/ggplot2/tree/main))](ggplot_theme_system_cheatsheet.png){fig-align="center" width="80%"}
 
 ## Inheritance of `theme` elements
 
@@ -188,61 +181,13 @@ p_bubble +
 
 ## Live demo
 
-Open `R/01_themes.R` to follow along or just watch and wait for the exercise.
-
-## Build a custom theme function
-
-```{r}
-#| eval: false
-# Write a custom theme function using theme light as a basis
-theme_workshop <- function(base_size = 16) {
-  theme_light(base_size = base_size) %+replace%
-    theme(
-      legend.text = element_text(size = rel(0.85)),
-      panel.grid.minor = element_blank()
-    )
-}
-
-# Apply the custom theme
-p_bubble + theme_workshop(base_size = 18)
-```
-
-## Put the theme in its own file
-
-- Good practice: Save the theme function in its own file (e.g. `R/theme.R`) and `source()` it across scripts:
-
-```r
-source(here::here("R", "theme.R"))
-p_bubble + theme_workshop()
-```
-
-## Set a global theme with `theme_set()`
-
-Set the theme once at the top of your script (or in `theme.R`) and every plot in the session picks it up.
-
-```r
-# This theme will be used for every plot in the session
-theme_set(theme_workshop())
-
-
-# each plot uses theme_workshop() automatically
-# no need to specify the theme again and again
-p_bubble            
-```
+Open `R/01_themes.R`
 
 ## Your turn
 
 ### Task (~7 min)
 
 > Open `exercises/01_themes_exercise.R`
-
-- Create a theme file `exercises/theme_custom.R`
-- In it, write `theme_custom()` based on a built-in theme of your choice
-- Source it in the exercise script and apply `theme_custom()` to `p_lines`
-
-**Finished early?** Try different `base_size` values, or add more customizations.
-
-Stuck? See `solutions/01_themes_final.R`.
 
 # Module 2: Colour with intent
 
@@ -253,8 +198,11 @@ library(scico)
 
 okabe <- palette.colors(palette = "Okabe-Ito")
 continent_colors <- c(
-  Africa = okabe[[2]], Americas = okabe[[3]], Asia = okabe[[4]],
-  Europe = okabe[[6]], Oceania = okabe[[1]]
+  Africa = okabe[[2]],
+  Americas = okabe[[3]],
+  Asia = okabe[[4]],
+  Europe = okabe[[6]],
+  Oceania = okabe[[1]]
 )
 
 # strip of discrete colours
@@ -299,25 +247,25 @@ Use colours your reader already associates with the thing.
 For scientific figures:
 
 1. **Intuitive** colours that match what your reader expects
-2. **Colourblind-safe** colours (about 1 in 12 men has a colour vision deficiency)
+2. **Colourblind-safe** colours
 
 ```{r}
 #| echo: false
-#| fig-width: 8
+#| fig-width: 9
 #| fig-height: 2.4
 #| fig-align: center
 set.seed(42)
 cb_demo <- data.frame(
-  x = runif(20, 0, 10),
-  y = runif(20, 0, 5),
-  group = rep(c("A", "B"), each = 10)
+  x = runif(50, 0, 10),
+  y = runif(50, 0, 5),
+  group = rep(c("A", "B"), each = 25)
 )
 rg_cols <- c(A = "red", B = "forestgreen")
-rg_deutan <- colorspace::deutan(rg_cols)
-names(rg_deutan) <- names(rg_cols)
+rg_deutan <- colorspace::deutan(rg_cols); names(rg_deutan) <- names(rg_cols)
+rg_protan <- colorspace::protan(rg_cols); names(rg_protan) <- names(rg_cols)
 
 p_normal <- ggplot(cb_demo, aes(x, y, color = group)) +
-  geom_point(size = 7, alpha = 0.9) +
+  geom_point(size = 6, alpha = 0.9) +
   scale_color_manual(values = rg_cols, guide = "none") +
   labs(title = "Normal vision") +
   theme_void() +
@@ -327,7 +275,11 @@ p_deutan <- p_normal +
   scale_color_manual(values = rg_deutan, guide = "none") +
   labs(title = "Deuteranopia")
 
-p_normal + p_deutan
+p_protan <- p_normal +
+  scale_color_manual(values = rg_protan, guide = "none") +
+  labs(title = "Protanopia")
+
+p_normal + p_deutan + p_protan + plot_layout(nrow = 1)
 ```
 
 ## Three kinds of palettes
@@ -407,16 +359,19 @@ Perceptually uniform, colourblind- and greyscale-safe. Best for ordered or conti
 #| echo: false
 #| fig-width: 10
 #| fig-height: 3.4
-ramp_panel(list(
-  magma   = viridisLite::viridis(256, option = "A"),
-  inferno = viridisLite::viridis(256, option = "B"),
-  plasma  = viridisLite::viridis(256, option = "C"),
-  viridis = viridisLite::viridis(256, option = "D"),
-  cividis = viridisLite::viridis(256, option = "E"),
-  rocket  = viridisLite::viridis(256, option = "F"),
-  mako    = viridisLite::viridis(256, option = "G"),
-  turbo   = viridisLite::viridis(256, option = "H")
-), ncol = 2)
+ramp_panel(
+  list(
+    magma = viridisLite::viridis(256, option = "A"),
+    inferno = viridisLite::viridis(256, option = "B"),
+    plasma = viridisLite::viridis(256, option = "C"),
+    viridis = viridisLite::viridis(256, option = "D"),
+    cividis = viridisLite::viridis(256, option = "E"),
+    rocket = viridisLite::viridis(256, option = "F"),
+    mako = viridisLite::viridis(256, option = "G"),
+    turbo = viridisLite::viridis(256, option = "H")
+  ),
+  ncol = 2
+)
 ```
 
 - access with `scale_colour_viridis_d()` / `_c()` 
@@ -432,57 +387,34 @@ Perceptually uniform and colourblind-safe. Made for **scientific data** and desi
 #| echo: false
 #| fig-width: 10
 #| fig-height: 3.4
-ramp_panel(list(
-  batlow  = scico::scico(256, palette = "batlow"),
-  lajolla = scico::scico(256, palette = "lajolla"),
-  bilbao  = scico::scico(256, palette = "bilbao"),
-  oslo    = scico::scico(256, palette = "oslo"),
-  vik     = scico::scico(256, palette = "vik"),
-  roma    = scico::scico(256, palette = "roma"),
-  berlin  = scico::scico(256, palette = "berlin"),
-  broc    = scico::scico(256, palette = "broc")
-), ncol = 2)
+ramp_panel(
+  list(
+    batlow = scico::scico(256, palette = "batlow"),
+    lajolla = scico::scico(256, palette = "lajolla"),
+    bilbao = scico::scico(256, palette = "bilbao"),
+    oslo = scico::scico(256, palette = "oslo"),
+    vik = scico::scico(256, palette = "vik"),
+    roma = scico::scico(256, palette = "roma"),
+    berlin = scico::scico(256, palette = "berlin"),
+    broc = scico::scico(256, palette = "broc")
+  ),
+  ncol = 2
+)
 ```
 
 - access with `scale_colour_scico_d()` / `_c()`
 
-[scico R package](https://github.com/thomasp85/scico) · [colour maps by Fabio Crameri](https://www.fabiocrameri.ch/colourmaps/)
-
-## Check it: `cvdPlot()`
-
-Simulates how your figure looks under common types of colour vision deficiency.
-
-```{r}
-#| output-location: slide
-library(colorBlindness)
-# Shrink text so the 4-panel cvdPlot output stays readable.
-cvdPlot(p_bubble + theme(text = element_text(size = 8)))
-```
-
-see next slide for the result
-
+[scico R package](https://github.com/thomasp85/scico), the [colour maps by Fabio Crameri](https://www.fabiocrameri.ch/colourmaps/)
 
 ## Live demo
 
 Open `R/02_color.R`.
-
-1. `cvdPlot()` the default, who can't read it?
-2. Apply Okabe-Ito colours manually
-3. A **named** colour vector for consistent continents
-4. viridis and scico scale functions
-
 
 ## Your turn
 
 ### Task (~5 min)
 
 > Open `exercises/02_color_exercise.R`
-
-- Apply a colourblind-safe palette (viridis or scico) to the line chart
-- Check it with `cvdPlot()`
-- **If time:** build a named vector so each continent keeps its colour
-
-Stuck? See `solutions/02_color_final.R`.
 
 # Module 3: Multi-panel layouts
 
@@ -529,7 +461,7 @@ p_gdp <- ggplot(gap_continent, aes(year, mean_gdpPercap, color = continent)) +
   scale_y_continuous(labels = label_dollar(accuracy = 1)) +
   scale_color_scico_d(palette = "batlow") +
   theme_workshop(base_size = 16) +
-  theme(legend.position = "none")+
+  theme(legend.position = "none") +
   labs(
     y = "GDP per capita",
     color = "Continent",
@@ -543,7 +475,8 @@ p_gdp <- ggplot(gap_continent, aes(year, mean_gdpPercap, color = continent)) +
 #| echo: false
 #| fig-width: 11
 #| fig-height: 6.5
-p_bubble_m4 / (p_gdp + p_life) +
+p_bubble_m4 /
+  (p_gdp + p_life) +
   plot_layout(guides = "collect") +
   plot_annotation(tag_levels = "A", tag_suffix = ")")
 ```
@@ -626,6 +559,106 @@ Open `R/04_export.R`.
 ### Task (~7 min)
 
 > Open `exercises/04_export_exercise.R`
+
+# Other handy packages
+
+## `gghighlight`
+
+[`gghighlight`](https://yutannihilation.github.io/gghighlight/) to fade data and highlight specific elements.
+
+```{r}
+#| code-fold: true
+library(gghighlight)
+p_bubble +
+  scale_color_scico_d(palette = "batlow") +
+  theme_workshop() +
+  gghighlight(
+    continent %in% c("Europe", "Africa"),
+    use_direct_label = FALSE
+  )
+```
+
+
+## `ggrepel` + `ggtext`
+
+[`ggrepel`](https://ggrepel.slowkow.com/) and [`ggtext`](https://wilkelab.org/ggtext/) for labels and markdown text
+
+```{r}
+#| code-fold: true
+library(ggrepel)
+library(ggtext)
+ggplot(gap_continent, aes(year, mean_lifeExp, color = continent)) +
+  geom_line(linewidth = 1) +
+  geom_text_repel(
+    data = gap_continent |> filter(year == max(year)),
+    aes(label = continent),
+    size = 6,
+    nudge_x = 2,
+    hjust = 0,
+    direction = "y",
+    seed = 1
+  ) +
+  scale_x_continuous(expand = expansion(mult = c(0.02, 0.15))) +
+  scale_color_scico_d(palette = "batlow") +
+  # use markdown in the title (see theme layer)
+  labs(
+    title = "*Life expectancy* by **continent**",
+    x = "Year",
+    y = "Life expectancy"
+  ) +
+  theme_workshop() +
+  theme(
+    panel.grid.major.x = element_blank(),
+    plot.title = element_markdown(),
+    legend.position = "none"
+  )
+```
+
+
+## `ggdist` raincloud plots
+
+[`ggdist`](https://mjskay.github.io/ggdist/) to show distributions and uncertainty -> Barplot alternatives
+
+```{r}
+#| code-fold: true
+library(ggdist)
+ggplot(
+  gap_2007 |> filter(continent != "Oceania"),
+  aes(continent, gdpPercap, fill = continent)
+) +
+  stat_halfeye(
+    adjust = 0.5,
+    width = 0.6,
+    .width = 0,
+    justification = -0.3,
+    point_colour = NA
+  ) +
+  geom_boxplot(width = 0.15, outlier.shape = NA, alpha = 0.5) +
+  stat_dots(side = "left", justification = 1.1, dotsize = 0.4) +
+  scale_y_log10(labels = label_dollar(accuracy = 1)) +
+  scale_fill_scico_d(palette = "batlow") +
+  theme_workshop() +
+  theme(legend.position = "none")
+```
+
+## `ggridges`
+
+[`ggridges`](https://wilkelab.org/ggridges/) for ridgeline distribution plots 
+
+```{r}
+#| code-fold: true
+library(ggridges)
+ggplot(gap_2007 |> filter(continent != "Oceania"), aes(lifeExp, continent, fill = continent)) +
+  geom_density_ridges(alpha = 0.8, scale = 1.1) +
+  scale_fill_scico_d(palette = "batlow") +
+  theme_workshop() +
+  theme(legend.position = "none") +
+  labs(x = "Life expectancy (years)", y = NULL)
+```
+
+::: {.aside}
+
+:::
 
 # Outro
 
